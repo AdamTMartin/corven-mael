@@ -1,0 +1,8 @@
+{
+  "name": "corven-lore-lookup",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:data": "node scripts/fetch-sheet.mjs"
+  }
+}
