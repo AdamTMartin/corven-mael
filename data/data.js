@@ -9,7 +9,7 @@ window.CORVEN_DATA = [
     date: "2025-08-15",
     tags: ["protagonist","backstory","motive","oath"],
     body: `
-**Species/Class**: (fill me)  
+**Species/Class**: Kenku Bard (and eventually Rogue?)
 **Concept**: Damned wanderer seeking to cut out the rot and the rot in himself.  
 
 **Core vows**
