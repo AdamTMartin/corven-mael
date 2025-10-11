@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Corven Lore Lookup</title>
+  <meta name="description" content="Searchable lore bible for Corven." />
+  <link rel="icon" href="assets/favicon.png" />
+  <style>
+    :root {
+      --bg: #0b0e12;
+      --panel: #121720;
+      --muted: #a7b0c0;
+      --text: #e7edf6;
+      --accent: #46d3ff;
+      --chip: #1b2230;
+      --chip-border: #2a3347;
+      --ring: 0 0 0 2px rgba(70,211,255,.25);
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 70% -10%, #101621 0%, var(--bg) 60%) no-repeat, var(--bg);
+      line-height: 1.45;
+    }
+    header {
+      max-width: 1100px; margin: 40px auto 10px; padding: 0 20px;
+    }
+    h1 { margin: 0 0 10px; letter-spacing: .3px; }
+    .sub { color: var(--muted); }
+    .toolbar {
+      display: grid; gap: 12px; grid-template-columns: 1fr; margin: 18px 0 6px;
+    }
+    .row { display:flex; gap:12px; flex-wrap:wrap; }
+    input[type="search"] {
+      width: 100%; padding: 14px 16px; border-radius: var(--radius);
+      background: var(--panel); color: var(--text); border: 1px solid #1e2634;
+      outline: none;
+    }
+    input[type="search"]:focus { box-shadow: var(--ring); border-color: var(--accent); }
+    .filters {
+      display:flex; gap:8px; flex-wrap:wrap;
+    }
+    .chip {
+      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+      background: var(--chip); border:1px solid var(--chip-border); color:var(--muted); cursor:pointer;
+      user-select:none;
+    }
+    .chip[data-active="true"] { color: var(--text); border-color: var(--accent); }
+    .container { max-width:1100px; margin: 12px auto 80px; padding: 0 20px; }
+    .meta { color: var(--muted); font-size: 14px; }
+    .grid {
+      display:grid; gap:14px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      margin-top: 16px;
+    }
+    .card {
+      background: linear-gradient(180deg, #121720 0%, #0f141d 100%);
+      border: 1px solid #1e2634; border-radius: 14px; padding: 16px; position: relative;
+    }
+    .type {
+      position:absolute; top:12px; right:12px; font-size:12px; color: var(--muted);
+      border:1px solid #273149; background:#0f1521; padding:4px 8px; border-radius:999px;
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+    .title {
+      margin: 0 0 6px; font-size: 18px; letter-spacing:.2px;
+    }
+    .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+    .tag {
+      font-size:12px; color:#b7c2d8; border:1px dashed #2b3550; padding:4px 8px; border-radius:999px;
+    }
+    .body { margin-top:10px; color:#dbe6f9; }
+    .body p { margin: .5em 0; }
+    .empty {
+      padding: 30px; border:1px dashed #2a3347; border-radius: var(--radius); color: var(--muted);
+      text-align:center; margin-top: 16px; background: #0f141d;
+    }
+    .counts { margin-top:8px; color: var(--muted); font-size: 14px; }
+    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+           background:#0e1420; border:1px solid #263149; padding:2px 6px; border-radius:6px; color:#bcd3ff; }
+    footer { max-width:1100px; margin: 40px auto; padding: 0 20px; color: var(--muted); }
+    a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Corven Lore Lookup</h1>
+    <div class="sub">A living, searchable lore bible for Corven—people, places, events, items, and long-form backstory.</div>
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="Search by title, tags, content… (try: 'Apostate Crow', 'Mojon', 'mentor')" />
+      <div class="row">
+        <div class="filters" id="typeFilters"></div>
+        <div class="filters" id="tagFilters"></div>
+      </div>
+    </div>
+    <div class="counts" id="counts"></div>
+  </header>
+
+  <div class="container">
+    <div id="results" class="grid"></div>
+    <div id="empty" class="empty" style="display:none;">No matching entries. Try fewer filters or a different search.</div>
+  </div>
+
+  <footer>
+    Tip: open an entry in a new tab with <span class="kbd">Alt</span> + click. Edit everything in <code>/data/data.js</code>.
+  </footer>
+
+  <!-- Vendors (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+
+  <!-- Data -->
+  <script src="data/data.js"></script>
+
+  <!-- App -->
+  <script>
+    // --- Config ---
+    const TYPES = ["Person","Place","Event","Item","Faction","Concept","Note"];
+    const MAX_TAGS = 18;
+
+    // --- State ---
+    let state = {
+      q: "",
+      activeTypes: new Set(),
+      activeTags: new Set(),
+      data: (window.CORVEN_DATA || []),
+      fuse: null
+    };
+
+    // Index with Fuse
+    function buildIndex() {
+      state.fuse = new Fuse(state.data, {
+        keys: [
+          { name: 'title', weight: 0.5 },
+          { name: 'summary', weight: 0.3 },
+          { name: 'tags', weight: 0.2 },
+          { name: 'body', weight: 0.4 }
+        ],
+        includeScore: true,
+        threshold: 0.36,
+        ignoreLocation: true,
+        minMatchCharLength: 2
+      });
+    }
+
+    // Derived tag list
+    function getTopTags() {
+      const counts = {};
+      state.data.forEach(e => (e.tags||[]).forEach(t => counts[t]=(counts[t]||0)+1));
+      return Object.entries(counts)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,MAX_TAGS)
+        .map(([tag,count])=>({tag,count}));
+    }
+
+    // Filters UI
+    function renderFilters() {
+      const typeWrap = document.getElementById('typeFilters');
+      typeWrap.innerHTML = '';
+      TYPES.forEach(t=>{
+        const chip = document.createElement('button');
+        chip.className = 'chip';
+        chip.textContent = t;
+        chip.setAttribute('data-active', state.activeTypes.has(t) ? 'true' : 'false');
+        chip.addEventListener('click', ()=>{
+          if (state.activeTypes.has(t)) state.activeTypes.delete(t);
+          else state.activeTypes.add(t);
+          renderResults();
+          renderFilters(); // re-render to reflect active state
+        });
+        typeWrap.appendChild(chip);
+      });
+
+      const tagWrap = document.getElementById('tagFilters');
+      tagWrap.innerHTML = '';
+      getTopTags().forEach(({tag})=>{
+        const chip = document.createElement('button');
+        chip.className = 'chip';
+        chip.textContent = `#${tag}`;
+        chip.setAttribute('data-active', state.activeTags.has(tag) ? 'true' : 'false');
+        chip.addEventListener('click', ()=>{
+          if (state.activeTags.has(tag)) state.activeTags.delete(tag);
+          else state.activeTags.add(tag);
+          renderResults();
+          renderFilters();
+        });
+        tagWrap.appendChild(chip);
+      });
+    }
+
+    // Query
+    function queryData() {
+      let rows = state.data.slice();
+      // text search
+      if (state.q && state.q.trim().length > 0) {
+        rows = state.fuse.search(state.q.trim()).map(r => r.item);
+      }
+      // type filter
+      if (state.activeTypes.size > 0) {
+        rows = rows.filter(r => state.activeTypes.has(r.type));
+      }
+      // tag filter
+      if (state.activeTags.size > 0) {
+        rows = rows.filter(r => (r.tags || []).some(t => state.activeTags.has(t)));
+      }
+      // sort by date (desc) then title
+      rows.sort((a,b)=>{
+        const da = a.date ? Date.parse(a.date) : 0;
+        const db = b.date ? Date.parse(b.date) : 0;
+        if (db !== da) return db - da;
+        return a.title.localeCompare(b.title);
+      });
+      return rows;
+    }
+
+    // Cross-link helper: replace [[slug]] with anchor
+    function linkBody(html, all) {
+      return html.replace(/\[\[([a-z0-9\-]+)\]\]/gi, (m, slug)=>{
+        const target = all.find(e => e.slug === slug);
+        return target
+          ? `<a href="#${target.slug}" data-slug="${target.slug}" class="xref">${target.title}</a>`
+          : m;
+      });
+    }
+
+    // Render
+    function renderResults() {
+      const rows = queryData();
+      const res = document.getElementById('results');
+      const empty = document.getElementById('empty');
+      const counts = document.getElementById('counts');
+
+      counts.textContent = `${rows.length} result${rows.length===1?'':'s'} · ${state.data.length} total entries`;
+
+      if (rows.length === 0) {
+        res.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      res.innerHTML = rows.map(e=>{
+        const tags = (e.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('');
+        const date = e.date ? `<span class="meta">${new Date(e.date).toLocaleDateString()}</span>` : '';
+        const bodyHTML = linkBody(marked.parse(e.body || ''), state.data);
+        return `
+          <article class="card" id="${e.slug}">
+            <div class="type">${e.type}</div>
+            <h3 class="title">${e.title}</h3>
+            <div class="meta">${date}${e.summary ? (date? ' · ' : '') + e.summary : ''}</div>
+            <div class="tags">${tags}</div>
+            <div class="body">${bodyHTML}</div>
+          </article>
+        `;
+      }).join('');
+
+      // hash navigation
+      if (location.hash) {
+        const el = document.querySelector(location.hash);
+        if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      }
+
+      // xref behavior (alt+click -> new tab)
+      res.querySelectorAll('a.xref').forEach(a=>{
+        a.addEventListener('click', (e)=>{
+          if (e.altKey) {
+            const slug = a.getAttribute('data-slug');
+            const url = new URL(window.location.href);
+            url.hash = slug;
+            window.open(url.toString(), '_blank');
+          } else {
+            e.preventDefault();
+            location.hash = a.getAttribute('data-slug');
+            document.getElementById(a.getAttribute('data-slug'))?.scrollIntoView({behavior:'smooth'});
+          }
+        });
+      });
+    }
+
+    // Events
+    document.getElementById('q').addEventListener('input', e=>{
+      state.q = e.target.value;
+      renderResults();
+    });
+
+    // Boot
+    buildIndex();
+    renderFilters();
+    renderResults();
+  </script>
+</body>
+</html>
