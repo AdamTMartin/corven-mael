@@ -29,20 +29,6 @@ window.CORVEN_DATA = [
     "body": "\n\"The night smelled of rust and stormwater. The Mojon convoy had come in under false lights—three skiffs carrying ledgers, blood vials, and prisoners still bound in work irons. Corven had been one of them until a week before, “released” to hunt down the ones who escaped with him. The Mojon liked poetic cruelty. \n\nHe met them on the docks of Rathu’s western inlet, the tide whispering against the pylons. Their overseer, Sib Orveck, had come to collect proof of Corven’s loyalty—a head in a sack. Instead, he found a Kenku crouched by the waterline, repeating his own orders back to him in perfect mimicry. \n\nThe first bolt struck before anyone realized the shadows were moving. Corven’s knife flashed once, then again, slicing through the rope that held a crate of volatile chronostone. When it shattered, time folded like wet paper—a half-second stutter where shouts became echoes and echoes became screams. Three men fell in the same heartbeat, their bodies a mirrored pattern in the rain. \n\nWhen the silence settled, the dock lanterns swayed. The name Corven Mael sank with the bodies, leaving only the sound of the sea repeating itself. By dawn, rumor said a voice that wasn’t a voice stalked Mojon patrols along the wharf, speaking their own words back to them just before they vanished. That was the birth of Echo.\"\n    "
   },
   {
-    "slug": "docks-cavern-ambush",
-    "type": "Event",
-    "title": "The Westcliff Incident",
-    "summary": "Where Corven chose the hard exit and became Echo.",
-    "date": "2022-10-04",
-    "tags": [
-      "awakening",
-      "escape",
-      "magic",
-      "transformation"
-    ],
-    "body": "\"The Mojon sent Corven to die, but the world had other plans.\",\"The Mojon Mining Consortium called it a 'reclamation.' Corven was the only conscripted specialist—bound by contract, not loyalty—sent west of Rathu to a collapsed Kithalist chamber near Westcliff. The others were Mojon officers, there to measure how much power still clung to the ruin. In truth, they meant to offer him as a living seal, a sacrifice to keep the chamber quiet.\n\nWhen the doors opened, the chamber did not roar—it *sang.* A sound too vast for words, older than wind or tide, struck through stone and blood alike. The Mojon guards fell first, their voices stolen mid-breath. Corven felt the contract burn out of his chest like paper in a furnace, and in its place came a chord only he could still hear—the deep undercurrent beneath all living things.\n\nThe blast tore the ruin apart. When the dust cleared, Corven was still standing, feathers scorched, eyes reflecting the rhythm of something ancient. He understood the tongue of Giants that day—not learned, but remembered. The music in the stone had spoken, and something in him had answered.\n\nHe walked away from Westcliff without looking back. The Mojon had tried to end him; the world had repurposed him. Now the melody guides his steps, a harmony he can’t name yet, but must follow. That was where Corven Mael ceased to be property—and **Echo** began.\""
-  },
-  {
     "slug": "hometown",
     "type": "Note",
     "title": "Corven's Hometown",
@@ -51,7 +37,7 @@ window.CORVEN_DATA = [
       "lore",
       "backstory"
     ],
-    "body": "Hovlin, book making, major trade route never Cymbri"
+    "body": "Hovlin, book making, major trade route near Cymbri"
   },
   {
     "slug": "bard-plan",
@@ -86,17 +72,6 @@ window.CORVEN_DATA = [
       "past"
     ],
     "body": "- Flames, Rogue, a fiend threatened someone dear to you"
-  },
-  {
-    "slug": "notes-inbox",
-    "type": "Note",
-    "title": "Scratchpad",
-    "summary": "Loose bits to sort later.",
-    "tags": [
-      "todo",
-      "ideas"
-    ],
-    "body": "\n- NPC idea: **Guilder Archivist** who buys confessions like futures.  \n- Location seed: **Wharf of Tides-That-Return**, clocks run wrong.  \n- Theme line: *\"If you carry the past, let it cut who needs cutting.\"*\n    "
   },
   {
     "slug": "apostate-crow",
