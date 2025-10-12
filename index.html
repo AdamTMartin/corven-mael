@@ -29,37 +29,25 @@
       background: radial-gradient(1200px 800px at 70% -10%, #101621 0%, var(--bg) 60%) no-repeat, var(--bg);
       line-height: 1.45;
     }
-    header {
-      max-width: 1100px; margin: 40px auto 10px; padding: 0 20px;
-    }
+    header { max-width: 1100px; margin: 40px auto 10px; padding: 0 20px; }
     h1 { margin: 0 0 10px; letter-spacing: .3px; }
     .sub { color: var(--muted); }
-    .toolbar {
-      display: grid; gap: 12px; grid-template-columns: 1fr; margin: 18px 0 6px;
-    }
+    .toolbar { display: grid; gap: 12px; grid-template-columns: 1fr; margin: 18px 0 6px; }
     .row { display:flex; gap:12px; flex-wrap:wrap; }
     input[type="search"] {
       width: 100%; padding: 14px 16px; border-radius: var(--radius);
-      background: var(--panel); color: var(--text); border: 1px solid #1e2634;
-      outline: none;
+      background: var(--panel); color: var(--text); border: 1px solid #1e2634; outline: none;
     }
     input[type="search"]:focus { box-shadow: var(--ring); border-color: var(--accent); }
-    .filters {
-      display:flex; gap:8px; flex-wrap:wrap;
-    }
+    .filters { display:flex; gap:8px; flex-wrap:wrap; }
     .chip {
       display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
-      background: var(--chip); border:1px solid var(--chip-border); color:var(--muted); cursor:pointer;
-      user-select:none;
+      background: var(--chip); border:1px solid var(--chip-border); color:var(--muted); cursor:pointer; user-select:none;
     }
     .chip[data-active="true"] { color: var(--text); border-color: var(--accent); }
     .container { max-width:1100px; margin: 12px auto 80px; padding: 0 20px; }
     .meta { color: var(--muted); font-size: 14px; }
-    .grid {
-      display:grid; gap:14px;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      margin-top: 16px;
-    }
+    .grid { display:grid; gap:14px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); margin-top: 16px; }
     .card {
       background: linear-gradient(180deg, #121720 0%, #0f141d 100%);
       border: 1px solid #1e2634; border-radius: 14px; padding: 16px; position: relative;
@@ -69,13 +57,9 @@
       border:1px solid #273149; background:#0f1521; padding:4px 8px; border-radius:999px;
       text-transform: uppercase; letter-spacing: .5px;
     }
-    .title {
-      margin: 0 0 6px; font-size: 18px; letter-spacing:.2px;
-    }
+    .title { margin: 0 0 6px; font-size: 18px; letter-spacing:.2px; }
     .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
-    .tag {
-      font-size:12px; color:#b7c2d8; border:1px dashed #2b3550; padding:4px 8px; border-radius:999px;
-    }
+    .tag { font-size:12px; color:#b7c2d8; border:1px dashed #2b3550; padding:4px 8px; border-radius:999px; }
     .body { margin-top:10px; color:#dbe6f9; }
     .body p { margin: .5em 0; }
     .empty {
@@ -83,10 +67,26 @@
       text-align:center; margin-top: 16px; background: #0f141d;
     }
     .counts { margin-top:8px; color: var(--muted); font-size: 14px; }
-    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-           background:#0e1420; border:1px solid #263149; padding:2px 6px; border-radius:6px; color:#bcd3ff; }
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      background:#0e1420; border:1px solid #263149; padding:2px 6px; border-radius:6px; color:#bcd3ff;
+    }
     footer { max-width:1100px; margin: 40px auto; padding: 0 20px; color: var(--muted); }
     a { color: var(--accent); text-decoration: none; }
+
+    /* Deep-link highlight */
+    @keyframes flash {
+      0% { box-shadow: 0 0 0 0 rgba(70,211,255,.0); }
+      40% { box-shadow: 0 0 0 6px rgba(70,211,255,.35); }
+      100% { box-shadow: 0 0 0 0 rgba(70,211,255,.0); }
+    }
+    .card.highlight { outline: 2px solid var(--accent); animation: flash 1.4s ease-out 0s 1; }
+    .permalink {
+      position:absolute; top:10px; left:12px; font-size:12px;
+      background:#0f1521; border:1px solid #273149; border-radius:999px;
+      padding:4px 8px; color:#bcd3ff; cursor:pointer;
+    }
+    .permalink:active { transform: translateY(1px); }
   </style>
 </head>
 <body>
@@ -121,6 +121,38 @@
 
   <!-- App -->
   <script>
+    // --- Deep-link helpers ---
+    function currentSlugFromURL() {
+      const h = (location.hash || "").replace(/^#/, "").trim();
+      if (h) return h;
+      const p = new URLSearchParams(location.search);
+      return (p.get("slug") || "").trim();
+    }
+    function setSlugInURL(slug) {
+      const url = new URL(window.location.href);
+      url.hash = slug;
+      url.searchParams.set("slug", slug);
+      history.replaceState(null, "", url);
+    }
+    let highlightTimer = null;
+    function focusBySlug(slug, flash = true) {
+      if (!slug) return;
+      const el = document.getElementById(slug);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (flash) {
+        el.classList.add("highlight");
+        clearTimeout(highlightTimer);
+        highlightTimer = setTimeout(()=> el.classList.remove("highlight"), 2000);
+      }
+    }
+    async function copyPermalink(slug) {
+      const url = new URL(window.location.href);
+      url.hash = slug;
+      url.searchParams.set("slug", slug);
+      await navigator.clipboard.writeText(url.toString());
+    }
+
     // --- Config ---
     const TYPES = ["Person","Place","Event","Item","Faction","Concept","Note"];
     const MAX_TAGS = 18;
@@ -138,10 +170,10 @@
     function buildIndex() {
       state.fuse = new Fuse(state.data, {
         keys: [
-          { name: 'title', weight: 0.5 },
+          { name: 'title',   weight: 0.5 },
           { name: 'summary', weight: 0.3 },
-          { name: 'tags', weight: 0.2 },
-          { name: 'body', weight: 0.4 }
+          { name: 'tags',    weight: 0.2 },
+          { name: 'body',    weight: 0.4 }
         ],
         includeScore: true,
         threshold: 0.36,
@@ -198,19 +230,15 @@
     // Query
     function queryData() {
       let rows = state.data.slice();
-      // text search
       if (state.q && state.q.trim().length > 0) {
         rows = state.fuse.search(state.q.trim()).map(r => r.item);
       }
-      // type filter
       if (state.activeTypes.size > 0) {
         rows = rows.filter(r => state.activeTypes.has(r.type));
       }
-      // tag filter
       if (state.activeTags.size > 0) {
         rows = rows.filter(r => (r.tags || []).some(t => state.activeTags.has(t)));
       }
-      // sort by date (desc) then title
       rows.sort((a,b)=>{
         const da = a.date ? Date.parse(a.date) : 0;
         const db = b.date ? Date.parse(b.date) : 0;
@@ -252,6 +280,7 @@
         const bodyHTML = linkBody(marked.parse(e.body || ''), state.data);
         return `
           <article class="card" id="${e.slug}">
+            <button class="permalink" data-slug="${e.slug}" title="Copy link">Link</button>
             <div class="type">${e.type}</div>
             <h3 class="title">${e.title}</h3>
             <div class="meta">${date}${e.summary ? (date? ' · ' : '') + e.summary : ''}</div>
@@ -261,24 +290,30 @@
         `;
       }).join('');
 
-      // hash navigation
-      if (location.hash) {
-        const el = document.querySelector(location.hash);
-        if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-      }
+      // Permalink buttons
+      res.querySelectorAll('.permalink').forEach(btn=>{
+        btn.addEventListener('click', async ()=>{
+          const slug = btn.getAttribute('data-slug');
+          setSlugInURL(slug);
+          await copyPermalink(slug);
+          btn.textContent = "Copied!";
+          setTimeout(()=> btn.textContent = "Link", 900);
+        });
+      });
 
-      // xref behavior (alt+click -> new tab)
+      // Cross-ref anchors: Alt+click -> new tab, otherwise focus + update URL
       res.querySelectorAll('a.xref').forEach(a=>{
         a.addEventListener('click', (e)=>{
+          const slug = a.getAttribute('data-slug');
           if (e.altKey) {
-            const slug = a.getAttribute('data-slug');
             const url = new URL(window.location.href);
             url.hash = slug;
+            url.searchParams.set("slug", slug);
             window.open(url.toString(), '_blank');
           } else {
             e.preventDefault();
-            location.hash = a.getAttribute('data-slug');
-            document.getElementById(a.getAttribute('data-slug'))?.scrollIntoView({behavior:'smooth'});
+            setSlugInURL(slug);
+            focusBySlug(slug, true);
           }
         });
       });
@@ -294,6 +329,17 @@
     buildIndex();
     renderFilters();
     renderResults();
+
+    // Focus if URL has a slug on load
+    focusBySlug(currentSlugFromURL(), true);
+
+    // React to navigation changes
+    window.addEventListener('hashchange', ()=> {
+      setTimeout(()=> focusBySlug(currentSlugFromURL(), true), 0);
+    });
+    window.addEventListener('popstate', ()=> {
+      setTimeout(()=> focusBySlug(currentSlugFromURL(), true), 0);
+    });
   </script>
 </body>
 </html>
