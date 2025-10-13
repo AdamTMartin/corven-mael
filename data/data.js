@@ -16,19 +16,6 @@ window.CORVEN_DATA = [
     "body": "\n**Species/Class**: Kenku Bard (and eventually Rogue?)\n**Concept**: Damned wanderer seeking to cut out the rot and the rot in himself.  \n\n**Core vows**\n- *Never let Mojon chains close on anyone else again.*\n- *Debts are paid in full—coin, blood, or time.*\n\n**Threads**\n- The **Mojon Mining Consortium** used prisoners as blood-keys in timework. Corven escaped. [[mojon-mining-consortium]]\n- Keeps a black token from the **Apostate Crow** as a reminder. [[apostate-crow]]\n    "
   },
   {
-    "slug": "docks-ambush",
-    "type": "Event",
-    "title": "The Docks Ambush",
-    "summary": "Where Corven chose the hard exit and became Echo.",
-    "date": "2022-10-04",
-    "tags": [
-      "escape",
-      "flashback",
-      "violence"
-    ],
-    "body": "\n\"The night smelled of rust and stormwater. The Mojon convoy had come in under false lights—three skiffs carrying ledgers, blood vials, and prisoners still bound in work irons. Corven had been one of them until a week before, “released” to hunt down the ones who escaped with him. The Mojon liked poetic cruelty. \n\nHe met them on the docks of Rathu’s western inlet, the tide whispering against the pylons. Their overseer, Sib Orveck, had come to collect proof of Corven’s loyalty—a head in a sack. Instead, he found a Kenku crouched by the waterline, repeating his own orders back to him in perfect mimicry. \n\nThe first bolt struck before anyone realized the shadows were moving. Corven’s knife flashed once, then again, slicing through the rope that held a crate of volatile chronostone. When it shattered, time folded like wet paper—a half-second stutter where shouts became echoes and echoes became screams. Three men fell in the same heartbeat, their bodies a mirrored pattern in the rain. \n\nWhen the silence settled, the dock lanterns swayed. The name Corven Mael sank with the bodies, leaving only the sound of the sea repeating itself. By dawn, rumor said a voice that wasn’t a voice stalked Mojon patrols along the wharf, speaking their own words back to them just before they vanished. That was the birth of Echo.\"\n    "
-  },
-  {
     "slug": "docks-cavern-ambush",
     "type": "Event",
     "title": "The Westcliff Incident",
