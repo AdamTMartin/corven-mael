@@ -82,11 +82,21 @@
     }
     .card.highlight { outline: 2px solid var(--accent); animation: flash 1.4s ease-out 0s 1; }
     .permalink {
-      position:absolute; top:10px; left:12px; font-size:12px;
-      background:#0f1521; border:1px solid #273149; border-radius:999px;
-      padding:4px 8px; color:#bcd3ff; cursor:pointer;
+      position:absolute;
+      top:4px;          /* was 10px */
+      left:10px;        /* a bit tighter */
+      font-size:11px;
+      background:#0f1521;
+      border:1px solid #273149;
+      border-radius:999px;
+      padding:2px 7px;
+      color:#bcd3ff;
+      cursor:pointer;
+      opacity:0.6;
+      transition:opacity .2s ease, transform .1s ease;
     }
-    .permalink:active { transform: translateY(1px); }
+    .card:hover .permalink { opacity:1; }
+    .permalink:active { transform:translateY(1px); }
   </style>
 </head>
 <body>
