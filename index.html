@@ -10,516 +10,309 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="icon" href="assets/favicon.png" />
   <style>
-    :root {
-      --bg: #0b0e12;
-      --panel: #121720;
-      --muted: #a7b0c0;
-      --text: #e7edf6;
-      --accent: #46d3ff;
-      --chip: #1b2230;
-      --chip-border: #2a3347;
-      --ring: 0 0 0 2px rgba(70,211,255,.25);
-      --radius: 12px;
+    :root{
+      --bg:#0b0e12; --panel:#121720; --muted:#a7b0c0; --text:#e7edf6; --accent:#46d3ff;
+      --chip:#1b2230; --chip-border:#2a3347; --ring:0 0 0 2px rgba(70,211,255,.25); --radius:12px;
     }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-      color: var(--text);
-      background: radial-gradient(1200px 800px at 70% -10%, #101621 0%, var(--bg) 60%) no-repeat, var(--bg);
-      line-height: 1.45;
+    *{box-sizing:border-box}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:var(--text);
+      background:radial-gradient(1200px 800px at 70% -10%,#101621 0%,var(--bg) 60%) no-repeat,var(--bg);line-height:1.45}
+    header{max-width:1100px;margin:40px auto 10px;padding:0 20px}
+    h1{margin:0 0 10px;letter-spacing:.3px}
+    .sub{color:var(--muted)}
+    .toolbar{display:grid;gap:12px;grid-template-columns:1fr;margin:18px 0 6px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    input[type=search]{width:100%;padding:14px 16px;border-radius:var(--radius);background:var(--panel);color:var(--text);
+      border:1px solid #1e2634;outline:none}
+    input[type=search]:focus{box-shadow:var(--ring);border-color:var(--accent)}
+    .filters{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:var(--chip);
+      border:1px solid var(--chip-border);color:var(--muted);cursor:pointer;user-select:none}
+    .chip[data-active=true]{color:var(--text);border-color:var(--accent)}
+    .chip.action{border-style:dashed;opacity:.9}
+    /* Accent button for Graph View */
+    #toggleView{
+      background:var(--accent); color:#061018; border-color:transparent; font-weight:700;
+      box-shadow:0 0 0 0 rgba(70,211,255,.25); transition:box-shadow .2s ease, transform .05s ease;
     }
-    header { max-width: 1100px; margin: 40px auto 10px; padding: 0 20px; }
-    h1 { margin: 0 0 10px; letter-spacing: .3px; }
-    .sub { color: var(--muted); }
-    .toolbar { display: grid; gap: 12px; grid-template-columns: 1fr; margin: 18px 0 6px; }
-    .row { display:flex; gap:12px; flex-wrap:wrap; }
-    input[type="search"] {
-      width: 100%; padding: 14px 16px; border-radius: var(--radius);
-      background: var(--panel); color: var(--text); border: 1px solid #1e2634; outline: none;
-    }
-    input[type="search"]:focus { box-shadow: var(--ring); border-color: var(--accent); }
-    .filters { display:flex; gap:8px; flex-wrap:wrap; }
-    .chip {
-      display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
-      background: var(--chip); border:1px solid var(--chip-border); color:var(--muted); cursor:pointer; user-select:none;
-    }
-    .chip[data-active="true"] { color: var(--text); border-color: var(--accent); }
-    .container { max-width:1100px; margin: 12px auto 80px; padding: 0 20px; }
-    .meta { color: var(--muted); font-size: 14px; }
-    .grid { display:grid; gap:14px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); margin-top: 16px; }
-    .card {
-      background: linear-gradient(180deg, #121720 0%, #0f141d 100%);
-      border: 1px solid #1e2634; border-radius: 14px; padding: 16px; position: relative;
-    }
-    .type {
-      position:absolute; top:12px; right:12px; font-size:12px; color: var(--muted);
-      border:1px solid #273149; background:#0f1521; padding:4px 8px; border-radius:999px;
-      text-transform: uppercase; letter-spacing: .5px;
-    }
-    .title { margin: 0 0 6px; font-size: 18px; letter-spacing:.2px; }
-    .tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
-    .tag { font-size:12px; color:#b7c2d8; border:1px dashed #2b3550; padding:4px 8px; border-radius:999px; }
-    .body { margin-top:10px; color:#dbe6f9; }
-    .body p { margin: .5em 0; }
-    .empty {
-      padding: 30px; border:1px dashed #2a3347; border-radius: var(--radius); color: var(--muted);
-      text-align:center; margin-top: 16px; background: #0f141d;
-    }
-    .counts { margin-top:8px; color: var(--muted); font-size: 14px; }
-    .kbd {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      background:#0e1420; border:1px solid #263149; padding:2px 6px; border-radius:6px; color:#bcd3ff;
-    }
-    footer { max-width:1100px; margin: 40px auto; padding: 0 20px; color: var(--muted); }
-    a { color: var(--accent); text-decoration: none; }
-
+    #toggleView:hover{box-shadow:0 0 0 6px rgba(70,211,255,.25)}
+    #toggleView:active{transform:translateY(1px)}
+    .container{max-width:1100px;margin:12px auto 80px;padding:0 20px}
+    .meta{color:var(--muted);font-size:14px}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin-top:16px}
+    .card{background:linear-gradient(180deg,#121720 0%,#0f141d 100%);border:1px solid #1e2634;border-radius:14px;padding:16px;position:relative}
+    .type{position:absolute;top:12px;right:12px;font-size:12px;color:var(--muted);border:1px solid #273149;background:#0f1521;
+      padding:4px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px}
+    .title{margin:0 0 6px;font-size:18px;letter-spacing:.2px}
+    .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .tag{font-size:12px;color:#b7c2d8;border:1px dashed #2b3550;padding:4px 8px;border-radius:999px}
+    .body{margin-top:10px;color:#dbe6f9}
+    .body p{margin:.5em 0}
+    .empty{padding:30px;border:1px dashed #2a3347;border-radius:var(--radius);color:var(--muted);text-align:center;margin-top:16px;background:#0f141d}
+    .counts{margin-top:8px;color:var(--muted);font-size:14px}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;background:#0e1420;border:1px solid #263149;
+      padding:2px 6px;border-radius:6px;color:#bcd3ff}
+    footer{max-width:1100px;margin:40px auto;padding:0 20px;color:var(--muted)}
+    a{color:var(--accent);text-decoration:none}
     /* Deep-link highlight */
-    @keyframes flash {
-      0% { box-shadow: 0 0 0 0 rgba(70,211,255,.0); }
-      40% { box-shadow: 0 0 0 6px rgba(70,211,255,.35); }
-      100% { box-shadow: 0 0 0 0 rgba(70,211,255,.0); }
-    }
-    .card.highlight { outline: 2px solid var(--accent); animation: flash 1.4s ease-out 0s 1; }
-
+    @keyframes flash{0%{box-shadow:0 0 0 0 rgba(70,211,255,0)}40%{box-shadow:0 0 0 6px rgba(70,211,255,.35)}100%{box-shadow:0 0 0 0 rgba(70,211,255,0)}}
+    .card.highlight{outline:2px solid var(--accent);animation:flash 1.4s ease-out 0s 1}
     /* permalink chip (Option 1 – adjusted) */
-    .permalink {
-      position:absolute; top:4px; left:10px; font-size:11px;
-      background:#0f1521; border:1px solid #273149; border-radius:999px;
-      padding:2px 7px; color:#bcd3ff; cursor:pointer; opacity:.6;
-      transition:opacity .2s ease, transform .1s ease;
-    }
-    .card:hover .permalink { opacity:1; }
-    .permalink:active { transform: translateY(1px); }
-
-    /* Graph container */
-    #graphWrap { display:none; }
-    #graph {
-      height: 72vh; min-height: 420px;
-      background: #0f141d;
-      border:1px solid #1e2634; border-radius: 14px;
-    }
-    .legend {
-      display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:12px; margin:8px 0 0;
-    }
-    .legend .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+    .permalink{position:absolute;top:4px;left:10px;font-size:11px;background:#0f1521;border:1px solid #273149;border-radius:999px;
+      padding:2px 7px;color:#bcd3ff;cursor:pointer;opacity:.6;transition:opacity .2s ease,transform .1s ease}
+    .card:hover .permalink{opacity:1}
+    .permalink:active{transform:translateY(1px)}
+    /* Graph */
+    #graphWrap{display:none}
+    #graph{height:72vh;min-height:420px;background:#0f141d;border:1px solid #1e2634;border-radius:14px}
+    .legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:8px 0 0}
+    .legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
   </style>
 </head>
 <body>
-  <header>
-    <h1>Corven Lore Lookup</h1>
-    <div class="sub">A living, searchable lore bible for Corven—people, places, events, items, and long-form backstory.</div>
-    <div class="toolbar">
-      <input id="q" type="search" placeholder="Search by title, tags, content… (try: 'Apostate Crow', 'Mojon', 'mentor')" />
-      <div class="row">
-        <div class="filters" id="typeFilters"></div>
-        <div class="filters" id="tagFilters"></div>
-        <button id="toggleView" class="chip" title="Switch between Cards and Graph">Graph View</button>
-      </div>
-    </div>
-    <div class="counts" id="counts"></div>
-  </header>
-
-  <div class="container">
-    <div id="cardsWrap">
-      <div id="results" class="grid"></div>
-      <div id="empty" class="empty" style="display:none;">No matching entries. Try fewer filters or a different search.</div>
-    </div>
-
-    <div id="graphWrap">
-      <div id="graph"></div>
-      <div id="graphHelp" class="meta" style="margin-top:6px;">
-        Tip: click a node to open the entry; <span class="kbd">Shift</span> + click opens it in a new tab. Layout adapts to the current filters and search.
-      </div>
-      <div class="legend" id="legend"></div>
+<header>
+  <h1>Corven Lore Lookup</h1>
+  <div class="sub">A living, searchable lore bible for Corven—people, places, events, items, and long-form backstory.</div>
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Search by title, tags, content… (try: 'Apostate Crow', 'Mojon', 'mentor')" />
+    <div class="row">
+      <div class="filters" id="typeFilters"></div>
+      <div class="filters" id="tagFilters"></div>
+      <button id="toggleView" class="chip" title="Switch between Cards and Graph">Graph View</button>
     </div>
   </div>
+  <div class="counts" id="counts"></div>
+</header>
 
-  <footer>
-    Tip: open an entry in a new tab with <span class="kbd">Alt</span> + click. Edit everything in <code>/data/data.js</code>.
-  </footer>
+<div class="container">
+  <div id="cardsWrap">
+    <div id="results" class="grid"></div>
+    <div id="empty" class="empty" style="display:none;">No matching entries. Try fewer filters or a different search.</div>
+  </div>
 
-  <!-- Vendors (CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-  <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+  <div id="graphWrap">
+    <div id="graph"></div>
+    <div id="graphHelp" class="meta" style="margin-top:6px;">
+      Tip: click a node to open the entry; <span class="kbd">Shift</span> + click opens it in a new tab. Layout adapts to the current filters and search.
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+</div>
 
-  <!-- Data -->
-  <script src="data/data.js"></script>
+<footer>
+  Tip: open an entry in a new tab with <span class="kbd">Alt</span> + click. Edit everything in <code>/data/data.js</code>.
+</footer>
 
-  <!-- App -->
-  <script>
-    // --- Deep-link helpers ---
-    function currentSlugFromURL() {
-      const h = (location.hash || "").replace(/^#/, "").trim();
-      if (h) return h;
-      const p = new URLSearchParams(location.search);
-      return (p.get("slug") || "").trim();
-    }
-    function setSlugInURL(slug) {
-      const url = new URL(window.location.href);
-      url.hash = slug;
-      url.searchParams.set("slug", slug);
-      history.replaceState(null, "", url);
-    }
-    let highlightTimer = null;
-    function focusBySlug(slug, flash = true) {
-      if (!slug) return;
-      const el = document.getElementById(slug);
-      if (!el) return;
-      // ensure we're on cards view when focusing
-      if (viewState.mode !== 'cards') toggleTo('cards', false);
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-      if (flash) {
-        el.classList.add("highlight");
-        clearTimeout(highlightTimer);
-        highlightTimer = setTimeout(()=> el.classList.remove("highlight"), 2000);
-      }
-    }
-    async function copyPermalink(slug) {
-      const url = new URL(window.location.href);
-      url.hash = slug;
-      url.searchParams.set("slug", slug);
-      await navigator.clipboard.writeText(url.toString());
-    }
+<!-- Vendors (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
 
-    // --- Config ---
-    const TYPES = ["Person","Place","Event","Item","Faction","Concept","Note"];
-    const MAX_TAGS = 18;
+<!-- Data -->
+<script src="data/data.js"></script>
 
-    // Map types to node colors (graph)
-    const TYPE_COLOR = {
-      Person:  "#6bd4ff",
-      Place:   "#ffa942",
-      Event:   "#a8ff6b",
-      Item:    "#b18cff",
-      Faction: "#ff6b9b",
-      Concept: "#8ad6a6",
-      Note:    "#b7c0d4"
-    };
+<!-- App -->
+<script>
+  // --- Deep-link helpers ---
+  function currentSlugFromURL(){
+    const h=(location.hash||"").replace(/^#/,"").trim(); if(h) return h;
+    const p=new URLSearchParams(location.search); return (p.get("slug")||"").trim();
+  }
+  function setSlugInURL(slug){
+    const url=new URL(window.location.href); url.hash=slug; url.searchParams.set("slug",slug);
+    history.replaceState(null,"",url);
+  }
+  let highlightTimer=null;
+  function focusBySlug(slug,flash=true){
+    if(!slug) return; const el=document.getElementById(slug); if(!el) return;
+    if(viewState.mode!=='cards') toggleTo('cards',false);
+    el.scrollIntoView({behavior:"smooth",block:"start"});
+    if(flash){ el.classList.add("highlight"); clearTimeout(highlightTimer);
+      highlightTimer=setTimeout(()=>el.classList.remove("highlight"),2000);}
+  }
+  async function copyPermalink(slug){
+    const url=new URL(window.location.href); url.hash=slug; url.searchParams.set("slug",slug);
+    await navigator.clipboard.writeText(url.toString());
+  }
 
-    // --- State ---
-    let state = {
-      q: "",
-      activeTypes: new Set(),
-      activeTags: new Set(),
-      data: (window.CORVEN_DATA || []),
-      fuse: null
-    };
+  // --- Config ---
+  const TYPES=["Person","Place","Event","Item","Faction","Concept","Note"];
+  const TAG_LIMIT=8;
 
-    let viewState = {
-      mode: 'cards',    // 'cards' | 'graph'
-      cy: null          // cytoscape instance
-    };
+  const TYPE_COLOR={ Person:"#6bd4ff", Place:"#ffa942", Event:"#a8ff6b", Item:"#b18cff", Faction:"#ff6b9b", Concept:"#8ad6a6", Note:"#b7c0d4" };
 
-    // Index with Fuse
-    function buildIndex() {
-      state.fuse = new Fuse(state.data, {
-        keys: [
-          { name: 'title',   weight: 0.5 },
-          { name: 'summary', weight: 0.3 },
-          { name: 'tags',    weight: 0.2 },
-          { name: 'body',    weight: 0.4 }
-        ],
-        includeScore: true,
-        threshold: 0.36,
-        ignoreLocation: true,
-        minMatchCharLength: 2
-      });
-    }
+  // --- State ---
+  let state={ q:"", activeTypes:new Set(), activeTags:new Set(), data:(window.CORVEN_DATA||[]), fuse:null, showAllTags:false };
+  let viewState={ mode:'cards', cy:null };
 
-    // Derived tag list
-    function getTopTags() {
-      const counts = {};
-      state.data.forEach(e => (e.tags||[]).forEach(t => counts[t]=(counts[t]||0)+1));
-      return Object.entries(counts)
-        .sort((a,b)=>b[1]-a[1])
-        .slice(0,MAX_TAGS)
-        .map(([tag,count])=>({tag,count}));
-    }
+  // Index with Fuse
+  function buildIndex(){
+    state.fuse=new Fuse(state.data,{ keys:[{name:'title',weight:.5},{name:'summary',weight:.3},{name:'tags',weight:.2},{name:'body',weight:.4}],
+      includeScore:true, threshold:.36, ignoreLocation:true, minMatchCharLength:2 });
+  }
 
-    // Filters UI
-    function renderFilters() {
-      const typeWrap = document.getElementById('typeFilters');
-      typeWrap.innerHTML = '';
-      TYPES.forEach(t=>{
-        const chip = document.createElement('button');
-        chip.className = 'chip';
-        chip.textContent = t;
-        chip.setAttribute('data-active', state.activeTypes.has(t) ? 'true' : 'false');
-        chip.addEventListener('click', ()=>{
-          if (state.activeTypes.has(t)) state.activeTypes.delete(t);
-          else state.activeTypes.add(t);
-          render();
-        });
-        typeWrap.appendChild(chip);
-      });
+  // All tags (sorted by frequency desc)
+  function getAllTags(){
+    const counts={}; state.data.forEach(e=>(e.tags||[]).forEach(t=>counts[t]=(counts[t]||0)+1));
+    return Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([tag,count])=>({tag,count}));
+  }
 
-      const tagWrap = document.getElementById('tagFilters');
-      tagWrap.innerHTML = '';
-      getTopTags().forEach(({tag})=>{
-        const chip = document.createElement('button');
-        chip.className = 'chip';
-        chip.textContent = `#${tag}`;
-        chip.setAttribute('data-active', state.activeTags.has(tag) ? 'true' : 'false');
-        chip.addEventListener('click', ()=>{
-          if (state.activeTags.has(tag)) state.activeTags.delete(tag);
-          else state.activeTags.add(tag);
-          render();
-        });
-        tagWrap.appendChild(chip);
-      });
-    }
-
-    // Query
-    function queryData() {
-      let rows = state.data.slice();
-      if (state.q && state.q.trim().length > 0) {
-        rows = state.fuse.search(state.q.trim()).map(r => r.item);
-      }
-      if (state.activeTypes.size > 0) {
-        rows = rows.filter(r => state.activeTypes.has(r.type));
-      }
-      if (state.activeTags.size > 0) {
-        rows = rows.filter(r => (r.tags || []).some(t => state.activeTags.has(t)));
-      }
-      rows.sort((a,b)=>{
-        const da = a.date ? Date.parse(a.date) : 0;
-        const db = b.date ? Date.parse(b.date) : 0;
-        if (db !== da) return db - da;
-        return a.title.localeCompare(b.title);
-      });
-      return rows;
-    }
-
-    // Cross-link helper: replace [[slug]] with anchor
-    function linkBody(html, all) {
-      return html.replace(/\[\[([a-z0-9\-]+)\]\]/gi, (m, slug)=>{
-        const target = all.find(e => e.slug === slug);
-        return target
-          ? `<a href="#${target.slug}" data-slug="${target.slug}" class="xref">${target.title}</a>`
-          : m;
-      });
-    }
-
-    // --- Cards view ---
-    function renderCards(rows) {
-      const res = document.getElementById('results');
-      const empty = document.getElementById('empty');
-      const counts = document.getElementById('counts');
-
-      counts.textContent = `${rows.length} result${rows.length===1?'':'s'} · ${state.data.length} total entries`;
-
-      if (rows.length === 0) {
-        res.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-
-      res.innerHTML = rows.map(e=>{
-        const tags = (e.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('');
-        const date = e.date ? `<span class="meta">${new Date(e.date).toLocaleDateString()}</span>` : '';
-        const bodyHTML = linkBody(marked.parse(e.body || ''), state.data);
-        return `
-          <article class="card" id="${e.slug}">
-            <button class="permalink" data-slug="${e.slug}" title="Copy link">Link</button>
-            <div class="type">${e.type}</div>
-            <h3 class="title">${e.title}</h3>
-            <div class="meta">${date}${e.summary ? (date? ' · ' : '') + e.summary : ''}</div>
-            <div class="tags">${tags}</div>
-            <div class="body">${bodyHTML}</div>
-          </article>
-        `;
-      }).join('');
-
-      // Permalink buttons
-      res.querySelectorAll('.permalink').forEach(btn=>{
-        btn.addEventListener('click', async ()=>{
-          const slug = btn.getAttribute('data-slug');
-          setSlugInURL(slug);
-          await copyPermalink(slug);
-          btn.textContent = "Copied!";
-          setTimeout(()=> btn.textContent = "Link", 900);
-        });
-      });
-
-      // Cross-ref anchors: Alt+click -> new tab, otherwise focus + update URL
-      res.querySelectorAll('a.xref').forEach(a=>{
-        a.addEventListener('click', (e)=>{
-          const slug = a.getAttribute('data-slug');
-          if (e.altKey) {
-            const url = new URL(window.location.href);
-            url.hash = slug;
-            url.searchParams.set("slug", slug);
-            window.open(url.toString(), '_blank');
-          } else {
-            e.preventDefault();
-            setSlugInURL(slug);
-            focusBySlug(slug, true);
-          }
-        });
-      });
-    }
-
-    // --- Graph view ---
-    function buildGraphElements(rows) {
-      const nodes = new Map(); // slug -> node data
-      const edges = new Map(); // key "a->b" -> edge data
-      const bySlug = new Map(rows.map(r => [r.slug, r]));
-
-      // add nodes
-      rows.forEach(r => {
-        nodes.set(r.slug, {
-          data: { id: r.slug, label: r.title, type: r.type }
-        });
-      });
-
-      // add edges from [[slug]] refs inside body
-      const REF_RE = /\[\[([a-z0-9\-]+)\]\]/gi;
-      rows.forEach(r => {
-        const body = r.body || "";
-        let m;
-        while ((m = REF_RE.exec(body)) !== null) {
-          const target = m[1];
-          if (bySlug.has(target)) {
-            const key = r.slug + '->' + target;
-            if (!edges.has(key)) {
-              edges.set(key, { data: { id: key, source: r.slug, target } });
-            }
-          }
-        }
-      });
-
-      return [...nodes.values(), ...edges.values()];
-    }
-
-    function renderGraph(rows) {
-      const wrap = document.getElementById('graph');
-      // (re)create cytoscape
-      if (viewState.cy) { viewState.cy.destroy(); viewState.cy = null; }
-
-      const elements = buildGraphElements(rows);
-
-      viewState.cy = cytoscape({
-        container: wrap,
-        elements,
-        style: [
-          {
-            selector: 'node',
-            style: {
-              'background-color': ele => TYPE_COLOR[ele.data('type')] || '#9aa7bd',
-              'label': 'data(label)',
-              'color': '#e7edf6',
-              'font-size': 10,
-              'text-wrap': 'wrap',
-              'text-max-width': 140,
-              'text-outline-color': '#0f141d',
-              'text-outline-width': 2,
-              'border-width': 1,
-              'border-color': '#263149',
-              'width': 16, 'height': 16
-            }
-          },
-          {
-            selector: 'edge',
-            style: {
-              'line-color': '#35507a',
-              'target-arrow-color': '#35507a',
-              'target-arrow-shape': 'triangle',
-              'curve-style': 'bezier',
-              'width': 1.5
-            }
-          },
-          {
-            selector: 'node:selected',
-            style: { 'border-width': 3, 'border-color': '#46d3ff' }
-          }
-        ],
-        layout: { name: 'cose', animate: true, padding: 30, nodeOverlap: 8 }
-      });
-
-      // click behavior
-      viewState.cy.on('tap', 'node', (evt) => {
-        const slug = evt.target.data('id');
-        if (evt.originalEvent && evt.originalEvent.shiftKey) {
-          const url = new URL(window.location.href); url.hash = slug; url.searchParams.set('slug', slug);
-          window.open(url.toString(), '_blank');
-          return;
-        }
-        setSlugInURL(slug);
-        focusBySlug(slug, true);
-      });
-
-      // legend
-      const legend = document.getElementById('legend');
-      legend.innerHTML = Object.entries(TYPE_COLOR)
-        .map(([type,color]) => `<span><span class="dot" style="background:${color}"></span>${type}</span>`)
-        .join('');
-    }
-
-    // --- View toggling ---
-    function toggleTo(mode, rerender = true) {
-      viewState.mode = mode;
-      const btn = document.getElementById('toggleView');
-      const cardsWrap = document.getElementById('cardsWrap');
-      const graphWrap = document.getElementById('graphWrap');
-      if (mode === 'graph') {
-        cardsWrap.style.display = 'none';
-        graphWrap.style.display = 'block';
-        btn.textContent = 'Cards View';
-        if (rerender) render(); // will call renderGraph
-      } else {
-        graphWrap.style.display = 'none';
-        cardsWrap.style.display = 'block';
-        btn.textContent = 'Graph View';
-        if (rerender) render(); // will call renderCards
-      }
-    }
-
-    // Unified render based on active view
-    function render() {
-      const rows = queryData();
-      if (viewState.mode === 'graph') {
-        // show count for context
-        document.getElementById('counts').textContent =
-          `${rows.length} node${rows.length===1?'':'s'} in graph · ${state.data.length} total entries`;
-        renderGraph(rows);
-      } else {
-        renderCards(rows);
-      }
-    }
-
-    // Events
-    document.getElementById('q').addEventListener('input', e=>{
-      state.q = e.target.value;
-      render();
-    });
-    document.getElementById('toggleView').addEventListener('click', ()=>{
-      toggleTo(viewState.mode === 'cards' ? 'graph' : 'cards');
-    });
-    window.addEventListener('resize', ()=>{
-      if (viewState.mode === 'graph' && viewState.cy) {
-        viewState.cy.resize(); viewState.cy.fit(undefined, 30);
-      }
+  // Filters UI
+  function renderFilters(){
+    const typeWrap=document.getElementById('typeFilters'); typeWrap.innerHTML='';
+    TYPES.forEach(t=>{
+      const chip=document.createElement('button'); chip.className='chip'; chip.textContent=t;
+      chip.setAttribute('data-active', state.activeTypes.has(t)?'true':'false');
+      chip.addEventListener('click',()=>{ state.activeTypes.has(t)?state.activeTypes.delete(t):state.activeTypes.add(t); render(); });
+      typeWrap.appendChild(chip);
     });
 
-    // Boot
-    buildIndex();
-    renderFilters();
-    toggleTo('cards', false); // start in cards
-    render();
+    const tagWrap=document.getElementById('tagFilters'); tagWrap.innerHTML='';
+    const allTags=getAllTags();
+    const visible = state.showAllTags ? allTags : allTags.slice(0, TAG_LIMIT);
 
-    // Focus if URL has a slug on load
-    focusBySlug(currentSlugFromURL(), true);
+    visible.forEach(({tag})=>{
+      const chip=document.createElement('button'); chip.className='chip'; chip.textContent=`#${tag}`;
+      chip.setAttribute('data-active', state.activeTags.has(tag)?'true':'false');
+      chip.addEventListener('click',()=>{ state.activeTags.has(tag)?state.activeTags.delete(tag):state.activeTags.add(tag); render(); });
+      tagWrap.appendChild(chip);
+    });
 
-    // React to navigation changes
-    window.addEventListener('hashchange', ()=> {
-      setTimeout(()=> focusBySlug(currentSlugFromURL(), true), 0);
+    if(allTags.length > TAG_LIMIT){
+      const more=document.createElement('button');
+      more.className='chip action';
+      more.textContent = state.showAllTags ? 'Show less tags' : `Show more tags (+${allTags.length - TAG_LIMIT})`;
+      more.addEventListener('click',()=>{ state.showAllTags=!state.showAllTags; renderFilters(); });
+      tagWrap.appendChild(more);
+    }
+  }
+
+  // Query
+  function queryData(){
+    let rows=state.data.slice();
+    if(state.q && state.q.trim().length>0){ rows=state.fuse.search(state.q.trim()).map(r=>r.item); }
+    if(state.activeTypes.size>0){ rows=rows.filter(r=>state.activeTypes.has(r.type)); }
+    if(state.activeTags.size>0){ rows=rows.filter(r=>(r.tags||[]).some(t=>state.activeTags.has(t))); }
+    rows.sort((a,b)=>{ const da=a.date?Date.parse(a.date):0; const db=b.date?Date.parse(b.date):0; if(db!==da) return db-da; return a.title.localeCompare(b.title); });
+    return rows;
+  }
+
+  // Cross-link helper
+  function linkBody(html,all){
+    return html.replace(/\[\[([a-z0-9\-]+)\]\]/gi,(m,slug)=>{
+      const target=all.find(e=>e.slug===slug);
+      return target ? `<a href="#${target.slug}" data-slug="${target.slug}" class="xref">${target.title}</a>` : m;
     });
-    window.addEventListener('popstate', ()=> {
-      setTimeout(()=> focusBySlug(currentSlugFromURL(), true), 0);
+  }
+
+  // --- Cards view ---
+  function renderCards(rows){
+    const res=document.getElementById('results'), empty=document.getElementById('empty'), counts=document.getElementById('counts');
+    counts.textContent=`${rows.length} result${rows.length===1?'':'s'} · ${state.data.length} total entries`;
+    if(rows.length===0){ res.innerHTML=''; empty.style.display='block'; return; }
+    empty.style.display='none';
+
+    res.innerHTML=rows.map(e=>{
+      const tags=(e.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('');
+      const date=e.date?`<span class="meta">${new Date(e.date).toLocaleDateString()}</span>`:'';
+      const bodyHTML=linkBody(marked.parse(e.body||''),state.data);
+      return `
+        <article class="card" id="${e.slug}">
+          <button class="permalink" data-slug="${e.slug}" title="Copy link">Link</button>
+          <div class="type">${e.type}</div>
+          <h3 class="title">${e.title}</h3>
+          <div class="meta">${date}${e.summary ? (date?' · ':'') + e.summary : ''}</div>
+          <div class="tags">${tags}</div>
+          <div class="body">${bodyHTML}</div>
+        </article>
+      `;
+    }).join('');
+
+    // Permalinks
+    res.querySelectorAll('.permalink').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const slug=btn.getAttribute('data-slug'); setSlugInURL(slug); await copyPermalink(slug);
+        btn.textContent="Copied!"; setTimeout(()=>btn.textContent="Link",900);
+      });
     });
-  </script>
+    // Cross-refs
+    res.querySelectorAll('a.xref').forEach(a=>{
+      a.addEventListener('click',(e)=>{
+        const slug=a.getAttribute('data-slug');
+        if(e.altKey){ const url=new URL(window.location.href); url.hash=slug; url.searchParams.set("slug",slug); window.open(url.toString(),'_blank'); }
+        else{ e.preventDefault(); setSlugInURL(slug); focusBySlug(slug,true); }
+      });
+    });
+  }
+
+  // --- Graph view ---
+  function buildGraphElements(rows){
+    const nodes=new Map(), edges=new Map(), bySlug=new Map(rows.map(r=>[r.slug,r]));
+    rows.forEach(r=>{ nodes.set(r.slug,{ data:{ id:r.slug, label:r.title, type:r.type } }); });
+    const REF_RE=/\[\[([a-z0-9\-]+)\]\]/gi;
+    rows.forEach(r=>{
+      const body=r.body||""; let m;
+      while((m=REF_RE.exec(body))!==null){
+        const target=m[1]; if(bySlug.has(target)){ const key=r.slug+'->'+target; if(!edges.has(key)) edges.set(key,{ data:{ id:key, source:r.slug, target } }); }
+      }
+    });
+    return [...nodes.values(), ...edges.values()];
+  }
+  function renderGraph(rows){
+    const wrap=document.getElementById('graph');
+    if(viewState.cy){ viewState.cy.destroy(); viewState.cy=null; }
+    const elements=buildGraphElements(rows);
+    viewState.cy=cytoscape({
+      container:wrap, elements,
+      style:[
+        { selector:'node', style:{
+          'background-color': ele=>TYPE_COLOR[ele.data('type')]||'#9aa7bd',
+          'label':'data(label)', 'color':'#e7edf6','font-size':10,'text-wrap':'wrap','text-max-width':140,
+          'text-outline-color':'#0f141d','text-outline-width':2,'border-width':1,'border-color':'#263149','width':16,'height':16 } },
+        { selector:'edge', style:{ 'line-color':'#35507a','target-arrow-color':'#35507a','target-arrow-shape':'triangle','curve-style':'bezier','width':1.5 } },
+        { selector:'node:selected', style:{ 'border-width':3,'border-color':'#46d3ff' } }
+      ],
+      layout:{ name:'cose', animate:true, padding:30, nodeOverlap:8 }
+    });
+    viewState.cy.on('tap','node',(evt)=>{
+      const slug=evt.target.data('id');
+      if(evt.originalEvent && evt.originalEvent.shiftKey){
+        const url=new URL(window.location.href); url.hash=slug; url.searchParams.set('slug',slug); window.open(url.toString(),'_blank'); return;
+      }
+      setSlugInURL(slug); focusBySlug(slug,true);
+    });
+    const legend=document.getElementById('legend');
+    legend.innerHTML=Object.entries(TYPE_COLOR).map(([type,color])=>`<span><span class="dot" style="background:${color}"></span>${type}</span>`).join('');
+  }
+
+  // --- View toggle ---
+  function toggleTo(mode,rerender=true){
+    viewState.mode=mode;
+    const btn=document.getElementById('toggleView'), cardsWrap=document.getElementById('cardsWrap'), graphWrap=document.getElementById('graphWrap');
+    if(mode==='graph'){ cardsWrap.style.display='none'; graphWrap.style.display='block'; btn.textContent='Cards View'; }
+    else{ graphWrap.style.display='none'; cardsWrap.style.display='block'; btn.textContent='Graph View'; }
+    if(rerender) render();
+  }
+
+  // Unified render
+  function render(){
+    const rows=queryData();
+    if(viewState.mode==='graph'){
+      document.getElementById('counts').textContent=`${rows.length} node${rows.length===1?'':'s'} in graph · ${state.data.length} total entries`;
+      renderGraph(rows);
+    } else { renderCards(rows); }
+  }
+
+  // Events
+  document.getElementById('q').addEventListener('input', e=>{ state.q=e.target.value; render(); });
+  document.getElementById('toggleView').addEventListener('click', ()=>{ toggleTo(viewState.mode==='cards'?'graph':'cards'); });
+  window.addEventListener('resize', ()=>{ if(viewState.mode==='graph' && viewState.cy){ viewState.cy.resize(); viewState.cy.fit(undefined,30); } });
+
+  // Boot
+  buildIndex(); renderFilters(); toggleTo('cards',false); render();
+  focusBySlug(currentSlugFromURL(), true);
+  window.addEventListener('hashchange', ()=> setTimeout(()=>focusBySlug(currentSlugFromURL(),true),0));
+  window.addEventListener('popstate', ()=> setTimeout(()=>focusBySlug(currentSlugFromURL(),true),0));
+</script>
 </body>
 </html>
