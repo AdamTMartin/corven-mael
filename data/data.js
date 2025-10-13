@@ -13,7 +13,7 @@ window.CORVEN_DATA = [
       "motive",
       "oath"
     ],
-    "body": "\n**Species/Class**: Kenku Bard (and eventually Rogue?)\n**Concept**: Damned wanderer seeking to cut out the rot and the rot in himself.  \n\n**Core vows**\n- *Never let Mojon chains close on anyone else again.*\n- *Debts are paid in full—coin, blood, or time.*\n\n**Threads**\n- The **Mojon Mining Consortium** used prisoners as blood-keys in timework. Corven escaped. [[mojon-mining-consortium]]\n- Keeps a black token from the **Apostate Crow** as a reminder. [[apostate-crow]]\n    "
+    "body": "\n**Species/Class**: Kenku Bard (and eventually Rogue?)\n**Concept**: Damned wanderer seeking to cut out the rot and the rot in himself.  \n**Hometown**: [[hometown]]\n\n**Core vows**\n- *Never let Mojon chains close on anyone else again.*\n- *Debts are paid in full—coin, blood, or time.*\n\n**Threads**\n- The **Mojon Mining Consortium** used prisoners as blood-keys in timework. Corven escaped. [[mojon-mining-consortium]]\n- Keeps a black token from the **Apostate Crow** as a reminder. [[apostate-crow]]\n    "
   },
   {
     "slug": "docks-cavern-ambush",
@@ -28,21 +28,6 @@ window.CORVEN_DATA = [
       "transformation"
     ],
     "body": "\"The Mojon [[mojon-mining-consortium]] sent Corven to die, but the world had other plans. The Mojon Mining Consortium called it a 'reclamation.' Corven was the only conscripted specialist—bound by contract, not loyalty—sent west of Rathu to a collapsed Kithalist chamber near Westcliff. The others were Mojon officers, including [[sib-orveck]], there to measure how much power still clung to the ruin. In truth, they meant to offer him as a living seal, a sacrifice to keep the chamber quiet.\n\nWhen the doors opened, the chamber did not roar—it *sang.* A sound too vast for words, older than wind or tide, struck through stone and blood alike. The Mojon guards fell first, their voices stolen mid-breath. Corven felt the contract burn out of his chest like paper in a furnace, and in its place came a chord only he could still hear—the deep undercurrent beneath all living things.\n\nThe blast tore the ruin apart. When the dust cleared, Corven was still standing, feathers scorched, eyes reflecting the rhythm of something ancient. He understood the tongue of Giants that day—not learned, but remembered. The music in the stone had spoken, and something in him had answered.\n\nHe walked away from Westcliff without looking back. The Mojon had tried to end him; the world had repurposed him. Now the melody guides his steps, a harmony he can’t name yet, but must follow. That was where Corven Mael ceased to be property—and **Echo** began.\""
-  },
-  {
-    "slug": "sib-orveck",
-    "type": "Person",
-    "title": "Corven's Handler and Voice",
-    "summary": "Where did Corven get his voice?",
-    "tags": [
-      "lore",
-      "backstory",
-      "handler",
-      "mojon",
-      "antagonist",
-      "motive"
-    ],
-    "body": "\"**Status:** Deceased (see [[docks-cavern-ambush]])  \n**Affiliation:** [[mojon-mining-consortium]]  \n**Role:** Quartermaster and Handler of Irregular Assets  \n\nSib Orveck was the Mojon Mining Consortium’s preferred mouthpiece for dirty logistics—too well-spoken for a torturer, too calm for a commander. His boots were always polished, his quill always sharp, and his contracts always fatal. He managed the \\\"released\\\" prisoners the Mojon used for off-books relic retrieval and experimental timework, ensuring every debt paid itself in blood.  \n\nTo the condemned, Orveck was the voice of mercy: polite, deliberate, even sympathetic. He made you *believe* the noose was your own idea. Corven Mael ( [[corven-profile]] ) was one of those he handled—a Kenku assigned to the Westcliff reclamation site under false promises of clemency. In truth, Orveck had marked him for sacrifice, the living key meant to keep the Kithalist chamber sealed.  \n\nWhen the chamber sang itself apart in the [[docks-cavern-ambush]], Orveck’s body was destroyed, but his **voice** endured. Corven heard it woven into the world’s hidden chord, a remnant of authority stripped of its master. He took that voice as his own, reshaping it into a weapon.  \n\nNow, when **Echo** speaks, it is Orveck’s cadence the Mojon hear—a calm, familiar rhythm turned against them. Some whisper that Orveck’s ghost travels within that tone, forced to witness every truth and execution it now delivers. Corven keeps it not as tribute, but as reclamation: proof that even a Mojon voice can be rewritten.\""
   },
   {
     "slug": "hometown",
@@ -75,7 +60,7 @@ window.CORVEN_DATA = [
       "industry",
       "timework"
     ],
-    "body": "\n**Modus**: Capture bloodlines tied to old pacts; harvest vitae for \"retroactive favors.\"  \n**Notes**: Ties into The Guild and the Apostate Crow; off-books convoys run through sympathetic ports.  \n\n**Known Contacts**\n- Quartermaster **Sib Orveck** (coward with immaculate boots).\n- Fixer **Vessel** (voice like broken glass).\n    "
+    "body": "\n**Modus**: Capture bloodlines tied to old pacts; harvest vitae for \"retroactive favors.\"  \n**Notes**: Ties into The Guild and the Apostate Crow; off-books convoys run through sympathetic ports.  \n\n**Known Contacts**\n- Quartermaster **[[sib-orveck]]** (coward with immaculate boots).\n    "
   },
   {
     "slug": "epic-destiny",
@@ -99,6 +84,22 @@ window.CORVEN_DATA = [
       "ideas"
     ],
     "body": "\n- NPC idea: **Guilder Archivist** who buys confessions like futures.  \n- Location seed: **Wharf of Tides-That-Return**, clocks run wrong.  \n- Theme line: *\"If you carry the past, let it cut who needs cutting.\"*\n    "
+  },
+  {
+    "slug": "sib-orveck",
+    "type": "Person",
+    "title": "Sib Orveck",
+    "summary": "Corven's Handler and Voice - Where did Corven get his voice?",
+    "tags": [
+      "lore",
+      "backstory",
+      "handler",
+      "mojon",
+      "antagonist",
+      "motive",
+      "voice"
+    ],
+    "body": "\"**Status:** Deceased (see [[docks-cavern-ambush]])  \n**Affiliation:** [[mojon-mining-consortium]]  \n**Role:** Quartermaster and Handler of Irregular Assets  \n\nSib Orveck was the Mojon Mining Consortium’s preferred mouthpiece for dirty logistics—too well-spoken for a torturer, too calm for a commander. His boots were always polished, his quill always sharp, and his contracts always fatal. He managed the \\\"released\\\" prisoners the Mojon used for off-books relic retrieval and experimental timework, ensuring every debt paid itself in blood.  \n\nTo the condemned, Orveck was the voice of mercy: polite, deliberate, even sympathetic. He made you *believe* the noose was your own idea. Corven Mael ( [[corven-profile]] ) was one of those he handled—a Kenku assigned to the Westcliff reclamation site under false promises of clemency. In truth, Orveck had marked him for sacrifice, the living key meant to keep the Kithalist chamber sealed.  \n\nWhen the chamber sang itself apart in the [[docks-cavern-ambush]], Orveck’s body was destroyed, but his **voice** endured. Corven heard it woven into the world’s hidden chord, a remnant of authority stripped of its master. He took that voice as his own, reshaping it into a weapon.  \n\nNow, when **Echo** speaks, it is Orveck’s cadence the Mojon hear—a calm, familiar rhythm turned against them. Some whisper that Orveck’s ghost travels within that tone, forced to witness every truth and execution it now delivers. Corven keeps it not as tribute, but as reclamation: proof that even a Mojon voice can be rewritten.\""
   },
   {
     "slug": "apostate-crow",
