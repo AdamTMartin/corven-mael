@@ -81,22 +81,28 @@
       100% { box-shadow: 0 0 0 0 rgba(70,211,255,.0); }
     }
     .card.highlight { outline: 2px solid var(--accent); animation: flash 1.4s ease-out 0s 1; }
+
+    /* permalink chip (Option 1 – adjusted) */
     .permalink {
-      position:absolute;
-      top:4px;          /* was 10px */
-      left:10px;        /* a bit tighter */
-      font-size:11px;
-      background:#0f1521;
-      border:1px solid #273149;
-      border-radius:999px;
-      padding:2px 7px;
-      color:#bcd3ff;
-      cursor:pointer;
-      opacity:0.6;
+      position:absolute; top:4px; left:10px; font-size:11px;
+      background:#0f1521; border:1px solid #273149; border-radius:999px;
+      padding:2px 7px; color:#bcd3ff; cursor:pointer; opacity:.6;
       transition:opacity .2s ease, transform .1s ease;
     }
     .card:hover .permalink { opacity:1; }
-    .permalink:active { transform:translateY(1px); }
+    .permalink:active { transform: translateY(1px); }
+
+    /* Graph container */
+    #graphWrap { display:none; }
+    #graph {
+      height: 72vh; min-height: 420px;
+      background: #0f141d;
+      border:1px solid #1e2634; border-radius: 14px;
+    }
+    .legend {
+      display:flex; gap:10px; flex-wrap:wrap; color:var(--muted); font-size:12px; margin:8px 0 0;
+    }
+    .legend .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:middle; }
   </style>
 </head>
 <body>
@@ -108,14 +114,25 @@
       <div class="row">
         <div class="filters" id="typeFilters"></div>
         <div class="filters" id="tagFilters"></div>
+        <button id="toggleView" class="chip" title="Switch between Cards and Graph">Graph View</button>
       </div>
     </div>
     <div class="counts" id="counts"></div>
   </header>
 
   <div class="container">
-    <div id="results" class="grid"></div>
-    <div id="empty" class="empty" style="display:none;">No matching entries. Try fewer filters or a different search.</div>
+    <div id="cardsWrap">
+      <div id="results" class="grid"></div>
+      <div id="empty" class="empty" style="display:none;">No matching entries. Try fewer filters or a different search.</div>
+    </div>
+
+    <div id="graphWrap">
+      <div id="graph"></div>
+      <div id="graphHelp" class="meta" style="margin-top:6px;">
+        Tip: click a node to open the entry; <span class="kbd">Shift</span> + click opens it in a new tab. Layout adapts to the current filters and search.
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
   </div>
 
   <footer>
@@ -125,6 +142,7 @@
   <!-- Vendors (CDN) -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
 
   <!-- Data -->
   <script src="data/data.js"></script>
@@ -149,6 +167,8 @@
       if (!slug) return;
       const el = document.getElementById(slug);
       if (!el) return;
+      // ensure we're on cards view when focusing
+      if (viewState.mode !== 'cards') toggleTo('cards', false);
       el.scrollIntoView({ behavior: "smooth", block: "start" });
       if (flash) {
         el.classList.add("highlight");
@@ -167,6 +187,17 @@
     const TYPES = ["Person","Place","Event","Item","Faction","Concept","Note"];
     const MAX_TAGS = 18;
 
+    // Map types to node colors (graph)
+    const TYPE_COLOR = {
+      Person:  "#6bd4ff",
+      Place:   "#ffa942",
+      Event:   "#a8ff6b",
+      Item:    "#b18cff",
+      Faction: "#ff6b9b",
+      Concept: "#8ad6a6",
+      Note:    "#b7c0d4"
+    };
+
     // --- State ---
     let state = {
       q: "",
@@ -174,6 +205,11 @@
       activeTags: new Set(),
       data: (window.CORVEN_DATA || []),
       fuse: null
+    };
+
+    let viewState = {
+      mode: 'cards',    // 'cards' | 'graph'
+      cy: null          // cytoscape instance
     };
 
     // Index with Fuse
@@ -214,8 +250,7 @@
         chip.addEventListener('click', ()=>{
           if (state.activeTypes.has(t)) state.activeTypes.delete(t);
           else state.activeTypes.add(t);
-          renderResults();
-          renderFilters(); // re-render to reflect active state
+          render();
         });
         typeWrap.appendChild(chip);
       });
@@ -230,8 +265,7 @@
         chip.addEventListener('click', ()=>{
           if (state.activeTags.has(tag)) state.activeTags.delete(tag);
           else state.activeTags.add(tag);
-          renderResults();
-          renderFilters();
+          render();
         });
         tagWrap.appendChild(chip);
       });
@@ -268,9 +302,8 @@
       });
     }
 
-    // Render
-    function renderResults() {
-      const rows = queryData();
+    // --- Cards view ---
+    function renderCards(rows) {
       const res = document.getElementById('results');
       const empty = document.getElementById('empty');
       const counts = document.getElementById('counts');
@@ -329,16 +362,153 @@
       });
     }
 
+    // --- Graph view ---
+    function buildGraphElements(rows) {
+      const nodes = new Map(); // slug -> node data
+      const edges = new Map(); // key "a->b" -> edge data
+      const bySlug = new Map(rows.map(r => [r.slug, r]));
+
+      // add nodes
+      rows.forEach(r => {
+        nodes.set(r.slug, {
+          data: { id: r.slug, label: r.title, type: r.type }
+        });
+      });
+
+      // add edges from [[slug]] refs inside body
+      const REF_RE = /\[\[([a-z0-9\-]+)\]\]/gi;
+      rows.forEach(r => {
+        const body = r.body || "";
+        let m;
+        while ((m = REF_RE.exec(body)) !== null) {
+          const target = m[1];
+          if (bySlug.has(target)) {
+            const key = r.slug + '->' + target;
+            if (!edges.has(key)) {
+              edges.set(key, { data: { id: key, source: r.slug, target } });
+            }
+          }
+        }
+      });
+
+      return [...nodes.values(), ...edges.values()];
+    }
+
+    function renderGraph(rows) {
+      const wrap = document.getElementById('graph');
+      // (re)create cytoscape
+      if (viewState.cy) { viewState.cy.destroy(); viewState.cy = null; }
+
+      const elements = buildGraphElements(rows);
+
+      viewState.cy = cytoscape({
+        container: wrap,
+        elements,
+        style: [
+          {
+            selector: 'node',
+            style: {
+              'background-color': ele => TYPE_COLOR[ele.data('type')] || '#9aa7bd',
+              'label': 'data(label)',
+              'color': '#e7edf6',
+              'font-size': 10,
+              'text-wrap': 'wrap',
+              'text-max-width': 140,
+              'text-outline-color': '#0f141d',
+              'text-outline-width': 2,
+              'border-width': 1,
+              'border-color': '#263149',
+              'width': 16, 'height': 16
+            }
+          },
+          {
+            selector: 'edge',
+            style: {
+              'line-color': '#35507a',
+              'target-arrow-color': '#35507a',
+              'target-arrow-shape': 'triangle',
+              'curve-style': 'bezier',
+              'width': 1.5
+            }
+          },
+          {
+            selector: 'node:selected',
+            style: { 'border-width': 3, 'border-color': '#46d3ff' }
+          }
+        ],
+        layout: { name: 'cose', animate: true, padding: 30, nodeOverlap: 8 }
+      });
+
+      // click behavior
+      viewState.cy.on('tap', 'node', (evt) => {
+        const slug = evt.target.data('id');
+        if (evt.originalEvent && evt.originalEvent.shiftKey) {
+          const url = new URL(window.location.href); url.hash = slug; url.searchParams.set('slug', slug);
+          window.open(url.toString(), '_blank');
+          return;
+        }
+        setSlugInURL(slug);
+        focusBySlug(slug, true);
+      });
+
+      // legend
+      const legend = document.getElementById('legend');
+      legend.innerHTML = Object.entries(TYPE_COLOR)
+        .map(([type,color]) => `<span><span class="dot" style="background:${color}"></span>${type}</span>`)
+        .join('');
+    }
+
+    // --- View toggling ---
+    function toggleTo(mode, rerender = true) {
+      viewState.mode = mode;
+      const btn = document.getElementById('toggleView');
+      const cardsWrap = document.getElementById('cardsWrap');
+      const graphWrap = document.getElementById('graphWrap');
+      if (mode === 'graph') {
+        cardsWrap.style.display = 'none';
+        graphWrap.style.display = 'block';
+        btn.textContent = 'Cards View';
+        if (rerender) render(); // will call renderGraph
+      } else {
+        graphWrap.style.display = 'none';
+        cardsWrap.style.display = 'block';
+        btn.textContent = 'Graph View';
+        if (rerender) render(); // will call renderCards
+      }
+    }
+
+    // Unified render based on active view
+    function render() {
+      const rows = queryData();
+      if (viewState.mode === 'graph') {
+        // show count for context
+        document.getElementById('counts').textContent =
+          `${rows.length} node${rows.length===1?'':'s'} in graph · ${state.data.length} total entries`;
+        renderGraph(rows);
+      } else {
+        renderCards(rows);
+      }
+    }
+
     // Events
     document.getElementById('q').addEventListener('input', e=>{
       state.q = e.target.value;
-      renderResults();
+      render();
+    });
+    document.getElementById('toggleView').addEventListener('click', ()=>{
+      toggleTo(viewState.mode === 'cards' ? 'graph' : 'cards');
+    });
+    window.addEventListener('resize', ()=>{
+      if (viewState.mode === 'graph' && viewState.cy) {
+        viewState.cy.resize(); viewState.cy.fit(undefined, 30);
+      }
     });
 
     // Boot
     buildIndex();
     renderFilters();
-    renderResults();
+    toggleTo('cards', false); // start in cards
+    render();
 
     // Focus if URL has a slug on load
     focusBySlug(currentSlugFromURL(), true);
