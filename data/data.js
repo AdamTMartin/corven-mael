@@ -39,8 +39,10 @@ window.CORVEN_DATA = [
       "backstory",
       "handler",
       "mojon",
-      "antagonist"
-    ]
+      "antagonist",
+      "motive"
+    ],
+    "body": "\"**Status:** Deceased (see [[docks-cavern-ambush]])  \n**Affiliation:** [[mojon-mining-consortium]]  \n**Role:** Quartermaster and Handler of Irregular Assets  \n\nSib Orveck was the Mojon Mining Consortium’s preferred mouthpiece for dirty logistics—too well-spoken for a torturer, too calm for a commander. His boots were always polished, his quill always sharp, and his contracts always fatal. He managed the \\\"released\\\" prisoners the Mojon used for off-books relic retrieval and experimental timework, ensuring every debt paid itself in blood.  \n\nTo the condemned, Orveck was the voice of mercy: polite, deliberate, even sympathetic. He made you *believe* the noose was your own idea. Corven Mael ( [[corven-profile]] ) was one of those he handled—a Kenku assigned to the Westcliff reclamation site under false promises of clemency. In truth, Orveck had marked him for sacrifice, the living key meant to keep the Kithalist chamber sealed.  \n\nWhen the chamber sang itself apart in the [[docks-cavern-ambush]], Orveck’s body was destroyed, but his **voice** endured. Corven heard it woven into the world’s hidden chord, a remnant of authority stripped of its master. He took that voice as his own, reshaping it into a weapon.  \n\nNow, when **Echo** speaks, it is Orveck’s cadence the Mojon hear—a calm, familiar rhythm turned against them. Some whisper that Orveck’s ghost travels within that tone, forced to witness every truth and execution it now delivers. Corven keeps it not as tribute, but as reclamation: proof that even a Mojon voice can be rewritten.\""
   },
   {
     "slug": "hometown",
@@ -61,7 +63,7 @@ window.CORVEN_DATA = [
     "tags": [
       "planning"
     ],
-    "body": "Creation or Spirits"
+    "body": "Creation. Creates from nothing."
   },
   {
     "slug": "mojon-mining-consortium",
