@@ -27,7 +27,20 @@ window.CORVEN_DATA = [
       "magic",
       "transformation"
     ],
-    "body": "\"The Mojon sent Corven to die, but the world had other plans.\",\"The Mojon Mining Consortium called it a 'reclamation.' Corven was the only conscripted specialist—bound by contract, not loyalty—sent west of Rathu to a collapsed Kithalist chamber near Westcliff. The others were Mojon officers, there to measure how much power still clung to the ruin. In truth, they meant to offer him as a living seal, a sacrifice to keep the chamber quiet.\n\nWhen the doors opened, the chamber did not roar—it *sang.* A sound too vast for words, older than wind or tide, struck through stone and blood alike. The Mojon guards fell first, their voices stolen mid-breath. Corven felt the contract burn out of his chest like paper in a furnace, and in its place came a chord only he could still hear—the deep undercurrent beneath all living things.\n\nThe blast tore the ruin apart. When the dust cleared, Corven was still standing, feathers scorched, eyes reflecting the rhythm of something ancient. He understood the tongue of Giants that day—not learned, but remembered. The music in the stone had spoken, and something in him had answered.\n\nHe walked away from Westcliff without looking back. The Mojon had tried to end him; the world had repurposed him. Now the melody guides his steps, a harmony he can’t name yet, but must follow. That was where Corven Mael ceased to be property—and **Echo** began.\""
+    "body": "\"The Mojon [[mojon-mining-consortium]] sent Corven to die, but the world had other plans. The Mojon Mining Consortium called it a 'reclamation.' Corven was the only conscripted specialist—bound by contract, not loyalty—sent west of Rathu to a collapsed Kithalist chamber near Westcliff. The others were Mojon officers, including [[sib-orveck]], there to measure how much power still clung to the ruin. In truth, they meant to offer him as a living seal, a sacrifice to keep the chamber quiet.\n\nWhen the doors opened, the chamber did not roar—it *sang.* A sound too vast for words, older than wind or tide, struck through stone and blood alike. The Mojon guards fell first, their voices stolen mid-breath. Corven felt the contract burn out of his chest like paper in a furnace, and in its place came a chord only he could still hear—the deep undercurrent beneath all living things.\n\nThe blast tore the ruin apart. When the dust cleared, Corven was still standing, feathers scorched, eyes reflecting the rhythm of something ancient. He understood the tongue of Giants that day—not learned, but remembered. The music in the stone had spoken, and something in him had answered.\n\nHe walked away from Westcliff without looking back. The Mojon had tried to end him; the world had repurposed him. Now the melody guides his steps, a harmony he can’t name yet, but must follow. That was where Corven Mael ceased to be property—and **Echo** began.\""
+  },
+  {
+    "slug": "sib-orveck",
+    "type": "Person",
+    "title": "Corven's Handler and Voice",
+    "summary": "Where did Corven get his voice?",
+    "tags": [
+      "lore",
+      "backstory",
+      "handler",
+      "mojon",
+      "antagonist"
+    ]
   },
   {
     "slug": "hometown",
