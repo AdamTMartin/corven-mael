@@ -3,27 +3,40 @@ name: Sync Lore from Google Sheets
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "0 */12 * * *" # every 12 hours; adjust as you like
+    - cron: "0 */12 * * *" # every 12 hours
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      # Lore (data.js) — unchanged
       - name: Generate data.js from Sheet
         run: npm run build:data
         env:
           SHEET_CSV_URL: ${{ secrets.SHEET_CSV_URL }}
+
+      # Journal (journal.js) — new
+      - name: Generate journal.js from Journal Sheet
+        run: node scripts/fetch-journal.mjs
+        env:
+          JOURNAL_SHEET_CSV_URL: ${{ secrets.JOURNAL_SHEET_CSV_URL }}
+
       - name: Commit changes
         run: |
           if [[ -n "$(git status --porcelain)" ]]; then
-            git config user.name "github-actions[bot]"
+            git config user.name  "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -A
-            git commit -m "chore: sync data.js from Google Sheets"
+            git commit -m "chore: sync lore (data.js) and journal (journal.js) from Google Sheets"
             git push
           else
             echo "No changes."

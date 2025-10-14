@@ -13,15 +13,16 @@
     :root{
       --bg:#0b0e12; --panel:#121720; --muted:#a7b0c0; --text:#e7edf6; --accent:#46d3ff;
       --chip:#1b2230; --chip-border:#2a3347; --ring:0 0 0 2px rgba(70,211,255,.25); --radius:12px;
+      --paper:#101521; --paper-line:#172034; --paper-edge:#0c111b;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:var(--text);
       background:radial-gradient(1200px 800px at 70% -10%,#101621 0%,var(--bg) 60%) no-repeat,var(--bg);line-height:1.45}
-    header{max-width:1100px;margin:40px auto 10px;padding:0 20px}
+    header{max-width:1100px;margin:40px auto 10px;padding:0 20px;position:relative}
     h1{margin:0 0 10px;letter-spacing:.3px}
     .sub{color:var(--muted)}
     .toolbar{display:grid;gap:12px;grid-template-columns:1fr;margin:18px 0 6px}
-    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
     input[type=search]{width:100%;padding:14px 16px;border-radius:var(--radius);background:var(--panel);color:var(--text);
       border:1px solid #1e2634;outline:none}
     input[type=search]:focus{box-shadow:var(--ring);border-color:var(--accent)}
@@ -31,10 +32,8 @@
     .chip[data-active=true]{color:var(--text);border-color:var(--accent)}
     .chip.action{border-style:dashed;opacity:.9}
     /* Accent button for Graph View */
-    #toggleView{
-      background:var(--accent); color:#061018; border-color:transparent; font-weight:700;
-      box-shadow:0 0 0 0 rgba(70,211,255,.25); transition:box-shadow .2s ease, transform .05s ease;
-    }
+    #toggleView{background:var(--accent);color:#061018;border-color:transparent;font-weight:700;
+      box-shadow:0 0 0 0 rgba(70,211,255,.25);transition:box-shadow .2s ease, transform .05s ease}
     #toggleView:hover{box-shadow:0 0 0 6px rgba(70,211,255,.25)}
     #toggleView:active{transform:translateY(1px)}
     .container{max-width:1100px;margin:12px auto 80px;padding:0 20px}
@@ -57,7 +56,7 @@
     /* Deep-link highlight */
     @keyframes flash{0%{box-shadow:0 0 0 0 rgba(70,211,255,0)}40%{box-shadow:0 0 0 6px rgba(70,211,255,.35)}100%{box-shadow:0 0 0 0 rgba(70,211,255,0)}}
     .card.highlight{outline:2px solid var(--accent);animation:flash 1.4s ease-out 0s 1}
-    /* permalink chip (Option 1 – adjusted) */
+    /* permalink chip */
     .permalink{position:absolute;top:4px;left:10px;font-size:11px;background:#0f1521;border:1px solid #273149;border-radius:999px;
       padding:2px 7px;color:#bcd3ff;cursor:pointer;opacity:.6;transition:opacity .2s ease,transform .1s ease}
     .card:hover .permalink{opacity:1}
@@ -67,252 +66,489 @@
     #graph{height:72vh;min-height:420px;background:#0f141d;border:1px solid #1e2634;border-radius:14px}
     .legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:8px 0 0}
     .legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+
+    /* Journal */
+    #journalWrap{display:none}
+    .journal-surface{
+      background:
+        linear-gradient(180deg, var(--paper-edge), var(--paper-edge)) left/6px 100% no-repeat,
+        repeating-linear-gradient(#0000, #0000 32px, var(--paper-line) 33px) ,
+        var(--paper);
+      border:1px solid #1e2634; border-radius:14px; padding:18px; box-shadow: inset 0 1px 0 #172034;
+    }
+    .journal-entry{
+      margin:14px 0 22px; padding:14px 16px; border:1px solid #1e2634; border-radius:12px;
+      background:rgba(10,14,22,0.5);
+    }
+    .journal-entry.highlight{ outline:2px solid var(--accent); animation:flash 1.4s ease-out 0s 1 }
+    .journal-title{ margin:0 0 6px; font-family: "Georgia", "Iowan Old Style", "Times New Roman", serif; font-size:20px; letter-spacing:.2px }
+    .journal-date{ color:#b7c0d4; font-size:13px; margin-bottom:6px }
+    .journal-tags{ display:flex; gap:6px; flex-wrap:wrap; margin:.25rem 0 .5rem }
+    .journal-body{ font-family: "Georgia", "Iowan Old Style", "Times New Roman", serif; color:#e9f2ff; line-height:1.7 }
+    .journal-body p{ margin:.6em 0 }
+    .journal-group{ margin:18px 0 10px; font-weight:700; color:#d1daeb; border-left:3px solid var(--accent); padding-left:10px }
+
+    /* Burger menu */
+    .burger{ position:absolute; top:6px; left:10px; width:38px; height:34px; display:inline-flex; align-items:center; justify-content:center;
+      background:#0f1521; border:1px solid #273149; border-radius:10px; cursor:pointer; }
+    .burger span{ width:18px; height:2px; background:#bcd3ff; display:block; position:relative }
+    .burger span::before, .burger span::after{ content:""; position:absolute; left:0; width:18px; height:2px; background:#bcd3ff }
+    .burger span::before{ top:-6px } .burger span::after{ top:6px }
+    .menu{ position:fixed; inset:0 0 0 auto; width:260px; background:#0e141f; border-left:1px solid #1e2634; transform:translateX(100%);
+      transition:transform .2s ease; z-index:1000; padding:16px }
+    .menu.open{ transform:none }
+    .menu h3{ margin:6px 0 12px; color:#e7edf6 }
+    .menu .menu-item{ display:block; width:100%; text-align:left; margin:6px 0; padding:10px 12px; border-radius:10px; border:1px solid #263149;
+      background:#121a28; color:#cfe2ff; cursor:pointer }
+    .menu .menu-item:hover{ border-color:var(--accent); color:#fff }
+    .backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; z-index:999 }
+    .backdrop.show{ display:block }
   </style>
 </head>
 <body>
-<header>
-  <h1>Corven Lore Lookup</h1>
-  <div class="sub">A living, searchable lore bible for Corven—people, places, events, items, and long-form backstory.</div>
-  <div class="toolbar">
-    <input id="q" type="search" placeholder="Search by title, tags, content… (try: 'Apostate Crow', 'Mojon', 'mentor')" />
-    <div class="row">
-      <div class="filters" id="typeFilters"></div>
-      <div class="filters" id="tagFilters"></div>
-      <button id="toggleView" class="chip" title="Switch between Cards and Graph">Graph View</button>
+  <header>
+    <button class="burger" id="burger" title="Menu"><span></span></button>
+    <h1>Corven Lore Lookup</h1>
+    <div class="sub">A living, searchable lore bible for Corven—people, places, events, items, and journal entries.</div>
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="Search by title, tags, content… (try: 'Apostate Crow', 'Mojon', 'mentor')" />
+      <div class="row">
+        <div class="filters" id="typeFilters"></div>
+        <div class="filters" id="tagFilters"></div>
+        <button id="toggleView" class="chip" title="Switch between Cards and Graph">Graph View</button>
+      </div>
+    </div>
+    <div class="counts" id="counts"></div>
+  </header>
+
+  <div class="container">
+    <!-- Cards -->
+    <div id="cardsWrap">
+      <div id="results" class="grid"></div>
+      <div id="empty" class="empty" style="display:none;">No matching entries. Try fewer filters or a different search.</div>
+    </div>
+
+    <!-- Graph -->
+    <div id="graphWrap">
+      <div id="graph"></div>
+      <div id="graphHelp" class="meta" style="margin-top:6px;">
+        Tip: click a node to open the entry; <span class="kbd">Shift</span> + click opens it in a new tab. Layout adapts to the current filters and search.
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <!-- Journal -->
+    <div id="journalWrap">
+      <div class="journal-surface" id="journalSurface"></div>
+      <div id="journalEmpty" class="empty" style="display:none;">No matching entries in the journal.</div>
     </div>
   </div>
-  <div class="counts" id="counts"></div>
-</header>
 
-<div class="container">
-  <div id="cardsWrap">
-    <div id="results" class="grid"></div>
-    <div id="empty" class="empty" style="display:none;">No matching entries. Try fewer filters or a different search.</div>
+  <!-- Slide-out menu -->
+  <div class="menu" id="menu">
+    <h3>Navigate</h3>
+    <button class="menu-item" data-target="cards">Lore (Cards)</button>
+    <button class="menu-item" data-target="graph">Lore (Graph)</button>
+    <button class="menu-item" data-target="journal">Journal</button>
   </div>
+  <div class="backdrop" id="backdrop"></div>
 
-  <div id="graphWrap">
-    <div id="graph"></div>
-    <div id="graphHelp" class="meta" style="margin-top:6px;">
-      Tip: click a node to open the entry; <span class="kbd">Shift</span> + click opens it in a new tab. Layout adapts to the current filters and search.
-    </div>
-    <div class="legend" id="legend"></div>
-  </div>
-</div>
+  <footer>
+    Tip: open a lore entry in a new tab with <span class="kbd">Alt</span> + click. Edit lore in <code>/data/data.js</code> and journal in <code>/data/journal.js</code>.
+  </footer>
 
-<footer>
-  Tip: open an entry in a new tab with <span class="kbd">Alt</span> + click. Edit everything in <code>/data/data.js</code>.
-</footer>
+  <!-- Vendors (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
 
-<!-- Vendors (CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
-<script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+  <!-- Data -->
+  <script src="data/data.js"></script>
+  <script src="data/journal.js"></script>
 
-<!-- Data -->
-<script src="data/data.js"></script>
-
-<!-- App -->
-<script>
-  // --- Deep-link helpers ---
-  function currentSlugFromURL(){
-    const h=(location.hash||"").replace(/^#/,"").trim(); if(h) return h;
-    const p=new URLSearchParams(location.search); return (p.get("slug")||"").trim();
-  }
-  function setSlugInURL(slug){
-    const url=new URL(window.location.href); url.hash=slug; url.searchParams.set("slug",slug);
-    history.replaceState(null,"",url);
-  }
-  let highlightTimer=null;
-  function focusBySlug(slug,flash=true){
-    if(!slug) return; const el=document.getElementById(slug); if(!el) return;
-    if(viewState.mode!=='cards') toggleTo('cards',false);
-    el.scrollIntoView({behavior:"smooth",block:"start"});
-    if(flash){ el.classList.add("highlight"); clearTimeout(highlightTimer);
-      highlightTimer=setTimeout(()=>el.classList.remove("highlight"),2000);}
-  }
-  async function copyPermalink(slug){
-    const url=new URL(window.location.href); url.hash=slug; url.searchParams.set("slug",slug);
-    await navigator.clipboard.writeText(url.toString());
-  }
-
-  // --- Config ---
-  const TYPES=["Person","Place","Event","Item","Faction","Concept","Note"];
-  const TAG_LIMIT=8;
-
-  const TYPE_COLOR={ Person:"#6bd4ff", Place:"#ffa942", Event:"#a8ff6b", Item:"#b18cff", Faction:"#ff6b9b", Concept:"#8ad6a6", Note:"#b7c0d4" };
-
-  // --- State ---
-  let state={ q:"", activeTypes:new Set(), activeTags:new Set(), data:(window.CORVEN_DATA||[]), fuse:null, showAllTags:false };
-  let viewState={ mode:'cards', cy:null };
-
-  // Index with Fuse
-  function buildIndex(){
-    state.fuse=new Fuse(state.data,{ keys:[{name:'title',weight:.5},{name:'summary',weight:.3},{name:'tags',weight:.2},{name:'body',weight:.4}],
-      includeScore:true, threshold:.36, ignoreLocation:true, minMatchCharLength:2 });
-  }
-
-  // All tags (sorted by frequency desc)
-  function getAllTags(){
-    const counts={}; state.data.forEach(e=>(e.tags||[]).forEach(t=>counts[t]=(counts[t]||0)+1));
-    return Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([tag,count])=>({tag,count}));
-  }
-
-  // Filters UI
-  function renderFilters(){
-    const typeWrap=document.getElementById('typeFilters'); typeWrap.innerHTML='';
-    TYPES.forEach(t=>{
-      const chip=document.createElement('button'); chip.className='chip'; chip.textContent=t;
-      chip.setAttribute('data-active', state.activeTypes.has(t)?'true':'false');
-      chip.addEventListener('click',()=>{ state.activeTypes.has(t)?state.activeTypes.delete(t):state.activeTypes.add(t); render(); });
-      typeWrap.appendChild(chip);
-    });
-
-    const tagWrap=document.getElementById('tagFilters'); tagWrap.innerHTML='';
-    const allTags=getAllTags();
-    const visible = state.showAllTags ? allTags : allTags.slice(0, TAG_LIMIT);
-
-    visible.forEach(({tag})=>{
-      const chip=document.createElement('button'); chip.className='chip'; chip.textContent=`#${tag}`;
-      chip.setAttribute('data-active', state.activeTags.has(tag)?'true':'false');
-      chip.addEventListener('click',()=>{ state.activeTags.has(tag)?state.activeTags.delete(tag):state.activeTags.add(tag); render(); });
-      tagWrap.appendChild(chip);
-    });
-
-    if(allTags.length > TAG_LIMIT){
-      const more=document.createElement('button');
-      more.className='chip action';
-      more.textContent = state.showAllTags ? 'Show less tags' : `Show more tags (+${allTags.length - TAG_LIMIT})`;
-      more.addEventListener('click',()=>{ state.showAllTags=!state.showAllTags; renderFilters(); });
-      tagWrap.appendChild(more);
+  <!-- App -->
+  <script>
+    // --- Deep-link helpers ---
+    function currentSlugFromURL(){
+      const h=(location.hash||"").replace(/^#/,"").trim();
+      if(h.startsWith("journal/")) return { journal:h.slice(8) };
+      if(h) return { slug:h };
+      const p=new URLSearchParams(location.search);
+      const view=(p.get("view")||"").trim();
+      const slug=(p.get("slug")||"").trim();
+      return { slug: slug || "", view: view || "" };
     }
-  }
+    function setSlugInURL(slug){
+      const url=new URL(window.location.href); url.hash=slug; url.searchParams.set("slug",slug);
+      history.replaceState(null,"",url);
+    }
+    function setJournalURL(slug){
+      const url=new URL(window.location.href); url.hash=`journal/${slug}`; url.searchParams.set("view","journal");
+      history.replaceState(null,"",url);
+    }
+    let highlightTimer=null;
+    function focusBySlug(slug,flash=true){
+      if(!slug) return; const el=document.getElementById(slug); if(!el) return;
+      if(viewState.mode!=='cards') toggleTo('cards',false);
+      el.scrollIntoView({behavior:"smooth",block:"start"});
+      if(flash){ el.classList.add("highlight"); clearTimeout(highlightTimer);
+        highlightTimer=setTimeout(()=>el.classList.remove("highlight"),2000); }
+    }
+    function focusJournalBySlug(slug,flash=true){
+      const el=document.getElementById('journal-'+slug); if(!el) return;
+      if(viewState.mode!=='journal') toggleTo('journal',false);
+      el.scrollIntoView({behavior:"smooth",block:"start"});
+      if(flash){ el.classList.add("highlight"); setTimeout(()=>el.classList.remove("highlight"),2000); }
+    }
+    async function copyPermalink(slug){
+      const url=new URL(window.location.href); url.hash=slug; url.searchParams.set("slug",slug);
+      await navigator.clipboard.writeText(url.toString());
+    }
+    async function copyJournalPermalink(slug){
+      const url=new URL(window.location.href); url.hash=`journal/${slug}`; url.searchParams.set("view","journal");
+      await navigator.clipboard.writeText(url.toString());
+    }
 
-  // Query
-  function queryData(){
-    let rows=state.data.slice();
-    if(state.q && state.q.trim().length>0){ rows=state.fuse.search(state.q.trim()).map(r=>r.item); }
-    if(state.activeTypes.size>0){ rows=rows.filter(r=>state.activeTypes.has(r.type)); }
-    if(state.activeTags.size>0){ rows=rows.filter(r=>(r.tags||[]).some(t=>state.activeTags.has(t))); }
-    rows.sort((a,b)=>{ const da=a.date?Date.parse(a.date):0; const db=b.date?Date.parse(b.date):0; if(db!==da) return db-da; return a.title.localeCompare(b.title); });
-    return rows;
-  }
+    // --- Config ---
+    const TYPES=["Person","Place","Event","Item","Faction","Concept","Note"];
+    const TAG_LIMIT=8;
 
-  // Cross-link helper
-  function linkBody(html,all){
-    return html.replace(/\[\[([a-z0-9\-]+)\]\]/gi,(m,slug)=>{
-      const target=all.find(e=>e.slug===slug);
-      return target ? `<a href="#${target.slug}" data-slug="${target.slug}" class="xref">${target.title}</a>` : m;
-    });
-  }
+    const TYPE_COLOR={ Person:"#6bd4ff", Place:"#ffa942", Event:"#a8ff6b", Item:"#b18cff", Faction:"#ff6b9b", Concept:"#8ad6a6", Note:"#b7c0d4" };
 
-  // --- Cards view ---
-  function renderCards(rows){
-    const res=document.getElementById('results'), empty=document.getElementById('empty'), counts=document.getElementById('counts');
-    counts.textContent=`${rows.length} result${rows.length===1?'':'s'} · ${state.data.length} total entries`;
-    if(rows.length===0){ res.innerHTML=''; empty.style.display='block'; return; }
-    empty.style.display='none';
+    // --- State ---
+    let state={
+      q:"", activeTypes:new Set(), activeTags:new Set(),
+      data:(window.CORVEN_DATA||[]),
+      journal:(window.JOURNAL_DATA||[]),
+      fuse:null, jfuse:null,
+      showAllTags:false, showAllJournalTags:false
+    };
+    let viewState={ mode:'cards', cy:null };
 
-    res.innerHTML=rows.map(e=>{
-      const tags=(e.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('');
-      const date=e.date?`<span class="meta">${new Date(e.date).toLocaleDateString()}</span>`:'';
-      const bodyHTML=linkBody(marked.parse(e.body||''),state.data);
-      return `
-        <article class="card" id="${e.slug}">
-          <button class="permalink" data-slug="${e.slug}" title="Copy link">Link</button>
-          <div class="type">${e.type}</div>
-          <h3 class="title">${e.title}</h3>
-          <div class="meta">${date}${e.summary ? (date?' · ':'') + e.summary : ''}</div>
-          <div class="tags">${tags}</div>
-          <div class="body">${bodyHTML}</div>
-        </article>
-      `;
-    }).join('');
+    // Build search indexes
+    function buildIndex(){
+      state.fuse=new Fuse(state.data,{ keys:[{name:'title',weight:.5},{name:'summary',weight:.3},{name:'tags',weight:.2},{name:'body',weight:.4}],
+        includeScore:true, threshold:.36, ignoreLocation:true, minMatchCharLength:2 });
+      state.jfuse=new Fuse(state.journal,{ keys:[{name:'title',weight:.5},{name:'tags',weight:.2},{name:'body',weight:.5}],
+        includeScore:true, threshold:.34, ignoreLocation:true, minMatchCharLength:2 });
+    }
 
-    // Permalinks
-    res.querySelectorAll('.permalink').forEach(btn=>{
-      btn.addEventListener('click', async ()=>{
-        const slug=btn.getAttribute('data-slug'); setSlugInURL(slug); await copyPermalink(slug);
-        btn.textContent="Copied!"; setTimeout(()=>btn.textContent="Link",900);
+    // Tag helpers
+    function allLoreTags(){
+      const c={}; state.data.forEach(e=>(e.tags||[]).forEach(t=>c[t]=(c[t]||0)+1));
+      return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([tag,count])=>({tag,count}));
+    }
+    function allJournalTags(){
+      const c={}; state.journal.forEach(e=>(e.tags||[]).forEach(t=>c[t]=(c[t]||0)+1));
+      return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([tag,count])=>({tag,count}));
+    }
+
+    // Filters UI (adapts per view)
+    function renderFilters(){
+      const typeWrap=document.getElementById('typeFilters');
+      const tagWrap=document.getElementById('tagFilters');
+      typeWrap.innerHTML=''; tagWrap.innerHTML='';
+      if(viewState.mode==='journal'){
+        // No types in journal; only tags
+        const all=allJournalTags();
+        const visible = state.showAllJournalTags ? all : all.slice(0, TAG_LIMIT);
+        visible.forEach(({tag})=>{
+          const chip=document.createElement('button'); chip.className='chip'; chip.textContent=`#${tag}`;
+          chip.setAttribute('data-active', state.activeTags.has(tag)?'true':'false');
+          chip.addEventListener('click',()=>{ state.activeTags.has(tag)?state.activeTags.delete(tag):state.activeTags.add(tag); render(); });
+          tagWrap.appendChild(chip);
+        });
+        if(all.length > TAG_LIMIT){
+          const more=document.createElement('button'); more.className='chip action';
+          more.textContent = state.showAllJournalTags ? 'Show less tags' : `Show more tags (+${all.length - TAG_LIMIT})`;
+          more.addEventListener('click',()=>{ state.showAllJournalTags=!state.showAllJournalTags; renderFilters(); });
+          tagWrap.appendChild(more);
+        }
+      } else {
+        // Cards / Graph
+        TYPES.forEach(t=>{
+          const chip=document.createElement('button'); chip.className='chip'; chip.textContent=t;
+          chip.setAttribute('data-active', state.activeTypes.has(t)?'true':'false');
+          chip.addEventListener('click',()=>{ state.activeTypes.has(t)?state.activeTypes.delete(t):state.activeTypes.add(t); render(); });
+          typeWrap.appendChild(chip);
+        });
+        const all=allLoreTags();
+        const visible = state.showAllTags ? all : all.slice(0, TAG_LIMIT);
+        visible.forEach(({tag})=>{
+          const chip=document.createElement('button'); chip.className='chip'; chip.textContent=`#${tag}`;
+          chip.setAttribute('data-active', state.activeTags.has(tag)?'true':'false');
+          chip.addEventListener('click',()=>{ state.activeTags.has(tag)?state.activeTags.delete(tag):state.activeTags.add(tag); render(); });
+          tagWrap.appendChild(chip);
+        });
+        if(all.length > TAG_LIMIT){
+          const more=document.createElement('button'); more.className='chip action';
+          more.textContent = state.showAllTags ? 'Show less tags' : `Show more tags (+${all.length - TAG_LIMIT})`;
+          more.addEventListener('click',()=>{ state.showAllTags=!state.showAllTags; renderFilters(); });
+          tagWrap.appendChild(more);
+        }
+      }
+    }
+
+    // Query lore
+    function queryLore(){
+      let rows=state.data.slice();
+      if(state.q && state.q.trim().length>0){ rows=state.fuse.search(state.q.trim()).map(r=>r.item); }
+      if(state.activeTypes.size>0){ rows=rows.filter(r=>state.activeTypes.has(r.type)); }
+      if(state.activeTags.size>0){ rows=rows.filter(r=>(r.tags||[]).some(t=>state.activeTags.has(t))); }
+      rows.sort((a,b)=>{ const da=a.date?Date.parse(a.date):0; const db=b.date?Date.parse(b.date):0; if(db!==da) return db-da; return a.title.localeCompare(b.title); });
+      return rows;
+    }
+
+    // Query journal
+    function queryJournal(){
+      let rows=state.journal.slice();
+      if(state.q && state.q.trim().length>0){ rows=state.jfuse.search(state.q.trim()).map(r=>r.item); }
+      if(state.activeTags.size>0){ rows=rows.filter(r=>(r.tags||[]).some(t=>state.activeTags.has(t))); }
+      rows.sort((a,b)=>{ const da=a.date?Date.parse(a.date):0; const db=b.date?Date.parse(b.date):0; if(db!==da) return db-da; return (a.title||"").localeCompare(b.title||""); });
+      return rows;
+    }
+
+    // Cross-link helper for lore bodies
+    function linkBody(html,all){
+      return html.replace(/\[\[([a-z0-9\-]+)\]\]/gi,(m,slug)=>{
+        const target=all.find(e=>e.slug===slug);
+        return target ? `<a href="#${target.slug}" data-slug="${target.slug}" class="xref">${target.title}</a>` : m;
+      });
+    }
+    // Cross-link helper for journal bodies (to lore)
+    function linkJournalBody(html,allLore){
+      return html.replace(/\[\[([a-z0-9\-]+)\]\]/gi,(m,slug)=>{
+        const target=allLore.find(e=>e.slug===slug);
+        return target ? `<a href="#${target.slug}" data-slug="${target.slug}" class="xref-lore">${target.title}</a>` : m;
+      });
+    }
+
+    // --- Cards view ---
+    function renderCards(rows){
+      const res=document.getElementById('results'), empty=document.getElementById('empty'), counts=document.getElementById('counts');
+      counts.textContent=`${rows.length} result${rows.length===1?'':'s'} · ${state.data.length} total lore entries`;
+      if(rows.length===0){ res.innerHTML=''; empty.style.display='block'; return; }
+      empty.style.display='none';
+
+      res.innerHTML=rows.map(e=>{
+        const tags=(e.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('');
+        const date=e.date?`<span class="meta">${new Date(e.date).toLocaleDateString()}</span>`:'';
+        const bodyHTML=linkBody(marked.parse(e.body||''),state.data);
+        return `
+          <article class="card" id="${e.slug}">
+            <button class="permalink" data-slug="${e.slug}" title="Copy link">Link</button>
+            <div class="type">${e.type}</div>
+            <h3 class="title">${e.title}</h3>
+            <div class="meta">${date}${e.summary ? (date?' · ':'') + e.summary : ''}</div>
+            <div class="tags">${tags}</div>
+            <div class="body">${bodyHTML}</div>
+          </article>
+        `;
+      }).join('');
+
+      res.querySelectorAll('.permalink').forEach(btn=>{
+        btn.addEventListener('click', async ()=>{
+          const slug=btn.getAttribute('data-slug'); setSlugInURL(slug); await copyPermalink(slug);
+          btn.textContent="Copied!"; setTimeout(()=>btn.textContent="Link",900);
+        });
+      });
+      res.querySelectorAll('a.xref').forEach(a=>{
+        a.addEventListener('click',(e)=>{
+          const slug=a.getAttribute('data-slug');
+          if(e.altKey){ const url=new URL(window.location.href); url.hash=slug; url.searchParams.set("slug",slug); window.open(url.toString(),'_blank'); }
+          else{ e.preventDefault(); setSlugInURL(slug); focusBySlug(slug,true); }
+        });
+      });
+    }
+
+    // --- Graph view ---
+    function buildGraphElements(rows){
+      const nodes=new Map(), edges=new Map(), bySlug=new Map(rows.map(r=>[r.slug,r]));
+      rows.forEach(r=>{ nodes.set(r.slug,{ data:{ id:r.slug, label:r.title, type:r.type } }); });
+      const REF_RE=/\[\[([a-z0-9\-]+)\]\]/gi;
+      rows.forEach(r=>{
+        const body=r.body||""; let m;
+        while((m=REF_RE.exec(body))!==null){
+          const target=m[1]; if(bySlug.has(target)){ const key=r.slug+'->'+target; if(!edges.has(key)) edges.set(key,{ data:{ id:key, source:r.slug, target } }); }
+        }
+      });
+      return [...nodes.values(), ...edges.values()];
+    }
+    function renderGraph(rows){
+      const wrap=document.getElementById('graph');
+      if(viewState.cy){ viewState.cy.destroy(); viewState.cy=null; }
+      const elements=buildGraphElements(rows);
+      viewState.cy=cytoscape({
+        container:wrap, elements,
+        style:[
+          { selector:'node', style:{
+            'background-color': ele=>TYPE_COLOR[ele.data('type')]||'#9aa7bd',
+            'label':'data(label)', 'color':'#e7edf6','font-size':10,'text-wrap':'wrap','text-max-width':140,
+            'text-outline-color':'#0f141d','text-outline-width':2,'border-width':1,'border-color':'#263149','width':16,'height':16 } },
+          { selector:'edge', style:{ 'line-color':'#35507a','target-arrow-color':'#35507a','target-arrow-shape':'triangle','curve-style':'bezier','width':1.5 } },
+          { selector:'node:selected', style:{ 'border-width':3,'border-color':'#46d3ff' } }
+        ],
+        layout:{ name:'cose', animate:true, padding:30, nodeOverlap:8 }
+      });
+      viewState.cy.on('tap','node',(evt)=>{
+        const slug=evt.target.data('id');
+        if(evt.originalEvent && evt.originalEvent.shiftKey){
+          const url=new URL(window.location.href); url.hash=slug; url.searchParams.set('slug',slug); window.open(url.toString(),'_blank'); return;
+        }
+        setSlugInURL(slug); focusBySlug(slug,true);
+      });
+      const legend=document.getElementById('legend');
+      legend.innerHTML=Object.entries(TYPE_COLOR).map(([type,color])=>`<span><span class="dot" style="background:${color}"></span>${type}</span>`).join('');
+    }
+
+    // --- Journal view ---
+    function renderJournal(rows){
+      const surface=document.getElementById('journalSurface');
+      const empty=document.getElementById('journalEmpty');
+      const counts=document.getElementById('counts');
+
+      counts.textContent = `${rows.length} journal entr${rows.length===1?'y':'ies'} · ${state.journal.length} total`;
+
+      if(rows.length===0){ surface.innerHTML=''; empty.style.display='block'; return; }
+      empty.style.display='none';
+
+      // Group by date (YYYY-MM-DD), show "Undated" if missing
+      const groups=new Map();
+      rows.forEach(r=>{
+        const key=r.date || 'Undated';
+        if(!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(r);
+      });
+      // Sort groups by date desc, 'Undated' last
+      const keys=[...groups.keys()].sort((a,b)=>{
+        if(a==='Undated') return 1; if(b==='Undated') return -1;
+        return Date.parse(b)-Date.parse(a);
+      });
+
+      surface.innerHTML = keys.map(k=>{
+        const pretty = k==='Undated' ? 'Undated' : new Date(k).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+        const items = groups.get(k).sort((a,b)=>(a.title||'').localeCompare(b.title||''));
+        const blocks = items.map(e=>{
+          const tags=(e.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('');
+          const bodyHTML=linkJournalBody(marked.parse(e.body||''), state.data);
+          return `
+            <section class="journal-entry" id="journal-${e.slug}">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+                <h3 class="journal-title">${e.title || '(untitled)'}</h3>
+                <button class="chip" data-jpermalink="${e.slug}" title="Copy link">Link</button>
+              </div>
+              <div class="journal-date">${pretty}${e.date && k==='Undated' ? '' : ''}</div>
+              <div class="journal-tags">${tags}</div>
+              <div class="journal-body">${bodyHTML}</div>
+            </section>
+          `;
+        }).join('');
+        return `<div class="journal-group">${pretty}</div>${blocks}`;
+      }).join('');
+
+      // Wire journal permalinks
+      surface.querySelectorAll('[data-jpermalink]').forEach(btn=>{
+        btn.addEventListener('click', async ()=>{
+          const slug=btn.getAttribute('data-jpermalink'); setJournalURL(slug); await copyJournalPermalink(slug);
+          btn.textContent="Copied!"; setTimeout(()=>btn.textContent="Link",900);
+        });
+      });
+
+      // Wire journal -> lore xrefs
+      surface.querySelectorAll('a.xref-lore').forEach(a=>{
+        a.addEventListener('click',(e)=>{
+          e.preventDefault();
+          const slug=a.getAttribute('data-slug');
+          setSlugInURL(slug);
+          focusBySlug(slug,true);
+        });
+      });
+    }
+
+    // --- View toggle ---
+    function toggleTo(mode,rerender=true){
+      viewState.mode=mode;
+      const btn=document.getElementById('toggleView'),
+            cardsWrap=document.getElementById('cardsWrap'),
+            graphWrap=document.getElementById('graphWrap'),
+            journalWrap=document.getElementById('journalWrap');
+
+      // show/hide sections
+      cardsWrap.style.display = (mode==='cards') ? 'block' : 'none';
+      graphWrap.style.display = (mode==='graph') ? 'block' : 'none';
+      journalWrap.style.display = (mode==='journal') ? 'block' : 'none';
+
+      // button label
+      btn.textContent = (mode==='graph') ? 'Cards View' : 'Graph View';
+
+      // reset type/tag filters when switching modes to avoid confusion
+      if(mode==='journal'){ state.activeTypes.clear(); state.activeTags.clear(); state.showAllTags=false; }
+      else{ state.activeTags.clear(); state.showAllJournalTags=false; }
+
+      renderFilters();
+      if(rerender) render();
+    }
+
+    // Unified render
+    function render(){
+      if(viewState.mode==='graph'){
+        const rows=queryLore();
+        document.getElementById('counts').textContent=`${rows.length} node${rows.length===1?'':'s'} in graph · ${state.data.length} total lore entries`;
+        renderGraph(rows);
+      } else if(viewState.mode==='journal'){
+        const rows=queryJournal();
+        renderJournal(rows);
+      } else {
+        renderCards(queryLore());
+      }
+    }
+
+    // Events
+    document.getElementById('q').addEventListener('input', e=>{ state.q=e.target.value; render(); });
+    document.getElementById('toggleView').addEventListener('click', ()=>{ toggleTo(viewState.mode==='cards'?'graph':'cards'); });
+    window.addEventListener('resize', ()=>{ if(viewState.mode==='graph' && viewState.cy){ viewState.cy.resize(); viewState.cy.fit(undefined,30); } });
+
+    // Burger menu logic
+    const burger=document.getElementById('burger');
+    const menu=document.getElementById('menu');
+    const backdrop=document.getElementById('backdrop');
+    function openMenu(){ menu.classList.add('open'); backdrop.classList.add('show'); }
+    function closeMenu(){ menu.classList.remove('open'); backdrop.classList.remove('show'); }
+    burger.addEventListener('click', openMenu);
+    backdrop.addEventListener('click', closeMenu);
+    menu.querySelectorAll('.menu-item').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const target=btn.getAttribute('data-target');
+        closeMenu();
+        toggleTo(target,true);
       });
     });
-    // Cross-refs
-    res.querySelectorAll('a.xref').forEach(a=>{
-      a.addEventListener('click',(e)=>{
-        const slug=a.getAttribute('data-slug');
-        if(e.altKey){ const url=new URL(window.location.href); url.hash=slug; url.searchParams.set("slug",slug); window.open(url.toString(),'_blank'); }
-        else{ e.preventDefault(); setSlugInURL(slug); focusBySlug(slug,true); }
-      });
+
+    // Boot
+    buildIndex();
+    // Respect ?view=journal on initial load
+    const init = currentSlugFromURL();
+    const qs = new URLSearchParams(location.search);
+    const want = (qs.get('view')||'').toLowerCase();
+    if(want==='journal'){ toggleTo('journal', false); } else { toggleTo('cards', false); }
+    renderFilters();
+    render();
+
+    // Focus if URL has deep link
+    if(init.journal){ focusJournalBySlug(init.journal, true); }
+    else if(init.slug){ focusBySlug(init.slug, true); }
+
+    // React to navigation changes (hash/query)
+    window.addEventListener('hashchange', ()=>{
+      const cur=currentSlugFromURL();
+      if(cur.journal){ toggleTo('journal', false); focusJournalBySlug(cur.journal, true); }
+      else if(cur.slug){ toggleTo('cards', false); focusBySlug(cur.slug, true); }
     });
-  }
-
-  // --- Graph view ---
-  function buildGraphElements(rows){
-    const nodes=new Map(), edges=new Map(), bySlug=new Map(rows.map(r=>[r.slug,r]));
-    rows.forEach(r=>{ nodes.set(r.slug,{ data:{ id:r.slug, label:r.title, type:r.type } }); });
-    const REF_RE=/\[\[([a-z0-9\-]+)\]\]/gi;
-    rows.forEach(r=>{
-      const body=r.body||""; let m;
-      while((m=REF_RE.exec(body))!==null){
-        const target=m[1]; if(bySlug.has(target)){ const key=r.slug+'->'+target; if(!edges.has(key)) edges.set(key,{ data:{ id:key, source:r.slug, target } }); }
-      }
+    window.addEventListener('popstate', ()=>{
+      const cur=currentSlugFromURL();
+      if(cur.journal){ toggleTo('journal', false); focusJournalBySlug(cur.journal, true); }
+      else if(cur.slug){ toggleTo('cards', false); focusBySlug(cur.slug, true); }
     });
-    return [...nodes.values(), ...edges.values()];
-  }
-  function renderGraph(rows){
-    const wrap=document.getElementById('graph');
-    if(viewState.cy){ viewState.cy.destroy(); viewState.cy=null; }
-    const elements=buildGraphElements(rows);
-    viewState.cy=cytoscape({
-      container:wrap, elements,
-      style:[
-        { selector:'node', style:{
-          'background-color': ele=>TYPE_COLOR[ele.data('type')]||'#9aa7bd',
-          'label':'data(label)', 'color':'#e7edf6','font-size':10,'text-wrap':'wrap','text-max-width':140,
-          'text-outline-color':'#0f141d','text-outline-width':2,'border-width':1,'border-color':'#263149','width':16,'height':16 } },
-        { selector:'edge', style:{ 'line-color':'#35507a','target-arrow-color':'#35507a','target-arrow-shape':'triangle','curve-style':'bezier','width':1.5 } },
-        { selector:'node:selected', style:{ 'border-width':3,'border-color':'#46d3ff' } }
-      ],
-      layout:{ name:'cose', animate:true, padding:30, nodeOverlap:8 }
-    });
-    viewState.cy.on('tap','node',(evt)=>{
-      const slug=evt.target.data('id');
-      if(evt.originalEvent && evt.originalEvent.shiftKey){
-        const url=new URL(window.location.href); url.hash=slug; url.searchParams.set('slug',slug); window.open(url.toString(),'_blank'); return;
-      }
-      setSlugInURL(slug); focusBySlug(slug,true);
-    });
-    const legend=document.getElementById('legend');
-    legend.innerHTML=Object.entries(TYPE_COLOR).map(([type,color])=>`<span><span class="dot" style="background:${color}"></span>${type}</span>`).join('');
-  }
-
-  // --- View toggle ---
-  function toggleTo(mode,rerender=true){
-    viewState.mode=mode;
-    const btn=document.getElementById('toggleView'), cardsWrap=document.getElementById('cardsWrap'), graphWrap=document.getElementById('graphWrap');
-    if(mode==='graph'){ cardsWrap.style.display='none'; graphWrap.style.display='block'; btn.textContent='Cards View'; }
-    else{ graphWrap.style.display='none'; cardsWrap.style.display='block'; btn.textContent='Graph View'; }
-    if(rerender) render();
-  }
-
-  // Unified render
-  function render(){
-    const rows=queryData();
-    if(viewState.mode==='graph'){
-      document.getElementById('counts').textContent=`${rows.length} node${rows.length===1?'':'s'} in graph · ${state.data.length} total entries`;
-      renderGraph(rows);
-    } else { renderCards(rows); }
-  }
-
-  // Events
-  document.getElementById('q').addEventListener('input', e=>{ state.q=e.target.value; render(); });
-  document.getElementById('toggleView').addEventListener('click', ()=>{ toggleTo(viewState.mode==='cards'?'graph':'cards'); });
-  window.addEventListener('resize', ()=>{ if(viewState.mode==='graph' && viewState.cy){ viewState.cy.resize(); viewState.cy.fit(undefined,30); } });
-
-  // Boot
-  buildIndex(); renderFilters(); toggleTo('cards',false); render();
-  focusBySlug(currentSlugFromURL(), true);
-  window.addEventListener('hashchange', ()=> setTimeout(()=>focusBySlug(currentSlugFromURL(),true),0));
-  window.addEventListener('popstate', ()=> setTimeout(()=>focusBySlug(currentSlugFromURL(),true),0));
-</script>
+  </script>
 </body>
 </html>

@@ -6,7 +6,7 @@ A searchable, auto-updating lore bible for **Corven Mael (Echo)**, powered by Go
 ## ✍️ Adding or Editing Entries
 
 1. **Open the Google Sheet**
-   - [Edit the sheet here](https://docs.google.com/spreadsheets/d/PLACE-YOUR-EDITABLE-LINK-HERE)
+   - [Edit the sheet here](https://docs.google.com/spreadsheets/d/18eSLL5bM2LhMXdZ2ZOaf-cHqxblSbTkTmqGaoG9PYAI/edit?gid=175844498#gid=175844498)
    - The site reads from its published CSV automatically.
 
 2. **Fill in columns**
@@ -54,7 +54,7 @@ Future feature: you’ll be able to select entries and export them as printable 
 
 gh workflow run “Sync Lore from Google Sheets”
 
-- Cron schedule: once per 24 h (edit in `.github/workflows/sheet-sync.yml`).
+- Cron schedule: twice per 24 h (edit in `.github/workflows/sheet-sync.yml`).
 
 ---
 
