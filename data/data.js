@@ -271,7 +271,7 @@ window.CORVEN_DATA = [
       "past",
       "mojon"
     ],
-    "body": "The Known Family Members:\n- [[pallus-mojon]], aka The Old Man, the Patriarch, Father.\n- [[brud-mojon]], aka The Hammer\n- [[devid-mojon]], aka The Recluse\n- [[pallus-mojon-iii]], Head of Consortium Operations\n- [[tomas-mojon]], the youngest son\n- [[kalista-mojon]], aka The Daughter"
+    "body": "The Known [[mojon-mining-consortium]] Family Members:\n- [[pallus-mojon]], aka The Old Man, the Patriarch, Father.\n- [[brud-mojon]], aka The Hammer\n- [[devid-mojon]], aka The Recluse\n- [[pallus-mojon-iii]], Head of Consortium Operations\n- [[tomas-mojon]], the youngest son\n- [[kalista-mojon]], aka The Daughter"
   },
   {
     "slug": "regulators",
