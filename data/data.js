@@ -4,7 +4,7 @@ window.CORVEN_DATA = [
   {
     "slug": "corven-profile",
     "type": "Person",
-    "title": "Corven Mael (aka Echo)",
+    "title": "Corven Mael",
     "summary": "Hellbound avenger, Mojon escapee, knives in the dark; keeps his promises even when it hurts.",
     "date": "2025-08-15",
     "tags": [
@@ -13,7 +13,7 @@ window.CORVEN_DATA = [
       "motive",
       "oath"
     ],
-    "body": "\n**Species/Class**: Kenku Bard (and eventually Rogue?)\n**Concept**: Damned wanderer seeking to cut out the rot and the rot in himself.  \n**Hometown**: [[hometown]]\n**Destiny**: [[epic-destiny]]\n\n**Core vows**\n- *Never let Mojon chains close on anyone else again.*\n- *Debts are paid in full—coin, blood, or time.*\n\n**Threads**\n- The **Mojon Mining Consortium** used prisoners as blood-keys in timework. Corven escaped. [[mojon-mining-consortium]], [[docks-cavern-ambush]]\n- Keeps a black token from the **Apostate Crow** as a reminder. [[apostate-crow]]\n- Wears [[the-mask]] on his chest, like a breastplate (but distinctly not for armor)\n    "
+    "body": "\n**Species/Class**: Kenku Bard (and eventually Rogue?)\n**Concept**: Damned wanderer seeking to cut out the rot and the rot in himself.  \n**Hometown**: [[hometown]]\n**Destiny**: [[epic-destiny]]\n\n**Core vows**\n- *Never let Mojon chains close on anyone else again.*\n- *Debts are paid in full—coin, blood, or time.*\n\n**Threads**\n- The **Mojon Mining Consortium** used prisoners as blood-keys in timework. Corven escaped. [[mojon-mining-consortium]], [[docks-cavern-ambush]]\n- Keeps a black token from the **Apostate Crow** as a reminder. [[apostate-crow]]\n- Wears [[the-mask]] on his chest, like a breastplate (but distinctly not for armor)\n\n**Known Associates** (AKA Player Characters)\n- [[brand]]\n- [[chant]]\n- [[willa-mae]]\n- [[little-odd-aspenleaf]]\n    "
   },
   {
     "slug": "docks-cavern-ambush",
@@ -30,6 +30,39 @@ window.CORVEN_DATA = [
     "body": "\"The Mojon [[mojon-mining-consortium]] sent Corven to die, but the world had other plans. The Mojon Mining Consortium called it a 'reclamation.' Corven was the only conscripted specialist—bound by contract, not loyalty—sent west of Rathu to a collapsed Kithalist chamber near Westcliff. The others were Mojon officers, including [[sib-orveck]], there to measure how much power still clung to the ruin. In truth, they meant to offer him as a living seal, a sacrifice to keep the chamber quiet.\n\nWhen the doors opened, the chamber did not roar—it *sang.* A sound too vast for words, older than wind or tide, struck through stone and blood alike. The Mojon guards fell first, their voices stolen mid-breath. Corven felt the contract burn out of his chest like paper in a furnace, and in its place came a chord only he could still hear—the deep undercurrent beneath all living things.\n\nThe blast tore the ruin apart. When the dust cleared, Corven was still standing, feathers scorched, eyes reflecting the rhythm of something ancient. He understood the tongue of Giants that day—not learned, but remembered. The music in the stone had spoken, and something in him had answered.\n\nHe walked away from Westcliff without looking back. The Mojon had tried to end him; the world had repurposed him. Now the melody guides his steps, a harmony he can’t name yet, but must follow. That was where Corven Mael ceased to be property—and **Echo** began.\""
   },
   {
+    "slug": "brand",
+    "type": "Player",
+    "title": "Brand",
+    "summary": "Part Guard, Part Elk, 100% Barbarian",
+    "tags": [
+      "player",
+      "protagonist"
+    ],
+    "body": "Listen, I don't remember exactly what kind of species Brand is. But I'll say this - he's amazing, and is MUCH taller than [[corven-profile]].\n\nPlayed by O."
+  },
+  {
+    "slug": "brud-mojon",
+    "type": "Person",
+    "title": "Brüd Mojon",
+    "summary": "The Hammer",
+    "tags": [
+      "lore",
+      "mojon"
+    ],
+    "body": "He was a chief of field operations in Hollín until he was killed in 503 s.d."
+  },
+  {
+    "slug": "chant",
+    "type": "Player",
+    "title": "Chant",
+    "summary": "Mysterious Man with Many Favors",
+    "tags": [
+      "player",
+      "protagonist"
+    ],
+    "body": "What's Dwight cooking up!? Sorcerer Supreme, and everybody owes him favors. Linked intrinsically to the caravan leader, just like [[corven-profile]].\n\nPlayed by Dwight."
+  },
+  {
     "slug": "the-mask",
     "type": "Item",
     "title": "Corven's Mask",
@@ -40,6 +73,29 @@ window.CORVEN_DATA = [
       "past"
     ],
     "body": "Corven wears a mask on his chest. It's a mask made for a human, not a Kenku. It's one final memento from [[sib-orveck]], as a reminder of what he fights for."
+  },
+  {
+    "slug": "devid-mojon",
+    "type": "Person",
+    "title": "Devid Mojon",
+    "summary": "The Recluse",
+    "tags": [
+      "lore",
+      "mojon"
+    ],
+    "body": "Little is known of Devid, who has never left the town of Mojon. He is the voice of his Father, and most of the children take their orders from him (save Kalista, who is Daddy’s Little Princess.). He handles much of the logistical management of the family operations. "
+  },
+  {
+    "slug": "edwin-tolstoff",
+    "type": "Person",
+    "title": "Edwin Tolstoff",
+    "summary": "The Necromancer",
+    "tags": [
+      "antagonist",
+      "mojon",
+      "lore"
+    ],
+    "body": "Master necromancer from the Age of Empires, Wormcaller and the Hand of [[apostate-crow]]. He seems to stand higher than Father Mojon (see [[pallus-mojon]]) in the esteem of the Apostate Crow, and his voice is considered to be synonymous with that of the Crow. He is served Directly by [[sons-of-kyuss]], who follow his will as their own. "
   },
   {
     "slug": "bard-plan",
@@ -63,6 +119,28 @@ window.CORVEN_DATA = [
     "body": "Hovlin, book making, major trade route near Cymbri"
   },
   {
+    "slug": "kalista-mojon",
+    "type": "Person",
+    "title": "Kalista Mojon",
+    "summary": "The Daughter",
+    "tags": [
+      "lore",
+      "mojon"
+    ],
+    "body": "Only daughter of the Mojon family and youngest child. She is the leader of the Regulators, and answers only to The Father and Master Tolstoff. She is in charge of dealing with the enemies of the family."
+  },
+  {
+    "slug": "little-odd-aspenleaf",
+    "type": "Player",
+    "title": "Little Odd Aspenleaf",
+    "summary": "Might be a Cat, Don't steal my stuff!",
+    "tags": [
+      "player",
+      "protagonist"
+    ],
+    "body": "Tried to steal [[corven-profile]]'s personal ledger. Don't do that again. I've got my beady crow eyes on you.\n\nPlayed by Cherith."
+  },
+  {
     "slug": "mojon-mining-consortium",
     "type": "Faction",
     "title": "Mojon Mining Consortium",
@@ -72,7 +150,29 @@ window.CORVEN_DATA = [
       "industry",
       "timework"
     ],
-    "body": "\n**Modus**: Capture bloodlines tied to old pacts; harvest vitae for \"retroactive favors.\"  \n**Notes**: Ties into The Guild and the Apostate Crow; off-books convoys run through sympathetic ports.  \n\n**Known Contacts**\n- Quartermaster **[[sib-orveck]]** (coward with immaculate boots).\n    "
+    "body": "\n**Modus**: Capture bloodlines tied to old pacts; harvest vitae for \"retroactive favors.\"  \n**Notes**: Ties into The Guild and the Apostate Crow; off-books convoys run through sympathetic ports.  \n\n**Known Contacts and Subservient Factions**\n- Quartermaster **[[sib-orveck]]** (coward with immaculate boots).\n- **[[the-mojon-family]]**\n- **[[acquisitors]]**\n- **[[hollow-men]]**\n- **[[regulators]]**\n- **[[hollowed]]**\n- **[[edwin-tolstoff]]**\n- **[[sons-of-kyuss]]**"
+  },
+  {
+    "slug": "pallus-mojon",
+    "type": "Person",
+    "title": "Pallus Mojon",
+    "summary": "The Old Man, The Patriarch, The Father",
+    "tags": [
+      "lore",
+      "mojon"
+    ],
+    "body": "On paper he is the latest Pallus to lead the family, but rumor hints that he is the first and only Patriarch of the family. He never leaves the family stronghold, though whether it’s because he cannot or will not is unknown. "
+  },
+  {
+    "slug": "pallus-mojon-iii",
+    "type": "Person",
+    "title": "Pallus Mojon (son)",
+    "summary": "Head of Various Operations",
+    "tags": [
+      "lore",
+      "mojon"
+    ],
+    "body": "Head of Consortium Operations and liaison to the Guild Council in Bagin. To all appearances, is a distinguished half-elven man with a fashionable touch of grey at his temples. Representing the polished business face of the family business, he is prominent in the Bagin social scene,  and is a member in good standing of the Hellfire Club."
   },
   {
     "slug": "epic-destiny",
@@ -114,6 +214,18 @@ window.CORVEN_DATA = [
     "body": "\"**Status:** Deceased (see [[docks-cavern-ambush]])  \n**Affiliation:** [[mojon-mining-consortium]]  \n**Role:** Quartermaster and Handler of Irregular Assets  \n\nSib Orveck was the Mojon Mining Consortium’s preferred mouthpiece for dirty logistics—too well-spoken for a torturer, too calm for a commander. His boots were always polished, his quill always sharp, and his contracts always fatal. He managed the \\\"released\\\" prisoners the Mojon used for off-books relic retrieval and experimental timework, ensuring every debt paid itself in blood.  \n\nTo the condemned, Orveck was the voice of mercy: polite, deliberate, even sympathetic. He made you *believe* the noose was your own idea. Corven Mael ( [[corven-profile]] ) was one of those he handled—a Kenku assigned to the Westcliff reclamation site under false promises of clemency. In truth, Orveck had marked him for sacrifice, the living key meant to keep the Kithalist chamber sealed.  \n\nWhen the chamber sang itself apart in the [[docks-cavern-ambush]], Orveck’s body was destroyed into a pile of worms, but his **voice** endured. Corven heard it woven into the world’s hidden chord, a remnant of authority stripped of its master. He took that voice as his own, reshaping it into a weapon.  \n\nNow, when **Echo** speaks, it is Orveck’s cadence the Mojon hear—a calm, familiar rhythm turned against them. Some whisper that Orveck’s ghost travels within that tone, forced to witness every truth and execution it now delivers. Corven keeps it not as tribute, but as reclamation: proof that even a Mojon voice can be rewritten.\""
   },
   {
+    "slug": "acquisitors",
+    "type": "Faction",
+    "title": "The Acquisitors",
+    "summary": "Mercenary Scholars and Mages",
+    "tags": [
+      "antagonist",
+      "lore",
+      "mojon"
+    ],
+    "body": "Comprised of mercenary scholars and mages, the Acquisitors present a more professional and cerebral version of the Mojon forces, being brought in to solidify control of magical resources in situations where the overt force they often bring to bear is less advantageous. "
+  },
+  {
     "slug": "apostate-crow",
     "type": "Faction",
     "title": "The Apostate Crow",
@@ -124,5 +236,88 @@ window.CORVEN_DATA = [
       "whispers"
     ],
     "body": "\n**Doctrine**: Unshackle the **Quiet God** beneath the horizon.  \n**Iconography**: Black feathers stitched into lips.  \n**Corven’s Tie**: A token traded for a name; the name led him out of a cell. Cost pending.  \n    "
+  },
+  {
+    "slug": "hollow-men",
+    "type": "Faction",
+    "title": "The Hollow Men",
+    "summary": "Core Mojon and Apostate Crow Force",
+    "tags": [
+      "antagonist",
+      "faction",
+      "mojon"
+    ],
+    "body": "The core of the Mojon and Apostate Crow’s forces, the Hollow Men are damned mortals of all walks of life who have succumbed to the corruptive tactics favored by the Mojon and their patron. "
+  },
+  {
+    "slug": "hollowed",
+    "type": "Faction",
+    "title": "The Hollowed",
+    "summary": "The Cannon Fodder",
+    "tags": [
+      "antagonist",
+      "faction",
+      "mojon"
+    ],
+    "body": "The ranks of [[hollow-men]] encompass many, and while a few rise to join [[regulators]], many more find their sense of self consumed by their service until they join the lowest ranks of the Hollow Men, the Hollowed. Comprised of mindless humanoids and beasts, the Hollowed are little more than cannon fodder…which is always useful."
+  },
+  {
+    "slug": "the-mojon-family",
+    "type": "Faction",
+    "title": "The Mojon Family",
+    "summary": "Various Mojon Family Members",
+    "tags": [
+      "lore",
+      "past",
+      "mojon"
+    ],
+    "body": "The Known Family Members:\n- [[pallus-mojon]], aka The Old Man, the Patriarch, Father.\n- [[brud-mojon]], aka The Hammer\n- [[devid-mojon]], aka The Recluse\n- [[pallus-mojon-iii]], Head of Consortium Operations\n- [[tomas-mojon]], the youngest son\n- [[kalista-mojon]], aka The Daughter"
+  },
+  {
+    "slug": "regulators",
+    "type": "Faction",
+    "title": "The Regulators",
+    "summary": "Enhanced Hollow Men",
+    "tags": [
+      "antagonist",
+      "faction",
+      "mojon"
+    ],
+    "body": "When Hollow Men (see [[hollow-men]]) prove themselves worthy, they are enhanced by their masters and join the ranks of the Regulators, whose wickedness and cruelty is matched only by their ferocity. They operate at the direction of Kalista Mojon, and are found in places where the Moon’s influence is at its most destructive. "
+  },
+  {
+    "slug": "sons-of-kyuss",
+    "type": "Faction",
+    "title": "The Sons of Kyuss",
+    "summary": "Undead Warriors",
+    "tags": [
+      "antagonist",
+      "cult",
+      "mojon",
+      "eldritch"
+    ],
+    "body": "This group of undead warriors first surfaced in 503 s.d., and have since been spotted working to extend the influence of [[apostate-crow]] in several conflicts."
+  },
+  {
+    "slug": "tomas-mojon",
+    "type": "Person",
+    "title": "Tomas Mojon",
+    "summary": "The Youngest Son",
+    "tags": [
+      "lore",
+      "mojon"
+    ],
+    "body": "he has been at the Collegium for the last five years, studying medicine. He seems to have no involvement with the family business."
+  },
+  {
+    "slug": "willa-mae",
+    "type": "Player",
+    "title": "Willa-Mae",
+    "summary": "The Southern Halfling",
+    "tags": [
+      "player",
+      "protagonist"
+    ],
+    "body": "Sorry [[corven-profile]] keeps copying your voice! He can't help it! You are very strong though.\n\nPlayed by Cheyenne."
   }
 ];
