@@ -13,7 +13,7 @@ window.CORVEN_DATA = [
       "motive",
       "oath"
     ],
-    "body": "\n**Species/Class**: Kenku Bard (and eventually Rogue?)\n**Concept**: Damned wanderer seeking to cut out the rot and the rot in himself.  \n**Hometown**: [[hometown]]\n**Destiny**: [[epic-destiny]]\n\n**Core vows**\n- *Never let Mojon chains close on anyone else again.*\n- *Debts are paid in full—coin, blood, or time.*\n\n**Threads**\n- The **Mojon Mining Consortium** used prisoners as blood-keys in timework. Corven escaped. [[mojon-mining-consortium]], [[docks-cavern-ambush]]\n- Keeps a black token from the **Apostate Crow** as a reminder. [[apostate-crow]]\n- Wears [[the-mask]] on his chest, like a breastplate (but distinctly not for armor)\n\n**Known Associates** (AKA Player Characters)\n- [[brand]]\n- [[chant]]\n- [[willa-mae]]\n- [[little-odd-aspenleaf]]\n    "
+    "body": "\n**Species/Class**: Kenku Bard (and eventually Rogue?)\n\n**Concept**: Damned wanderer seeking to cut out the rot and the rot in himself.  \n\n**Hometown**: [[hometown]]\n\n**Destiny**: [[epic-destiny]]\n\n---\n\n**Core vows**\n- *Never let Mojon chains close on anyone else again.*\n- *Debts are paid in full—coin, blood, or time.*\n\n**Threads**\n- The **Mojon Mining Consortium** used prisoners as blood-keys in timework. Corven escaped. [[mojon-mining-consortium]], [[docks-cavern-ambush]]\n- Keeps a black token from the **Apostate Crow** as a reminder. [[apostate-crow]]\n- Wears [[the-mask]] on his chest, like a breastplate (but distinctly not for armor)\n\n**Known Associates** (AKA Player Characters)\n- [[brand]]\n- [[chant]]\n- [[willa-mae]]\n- [[little-odd-aspenleaf]]\n    "
   },
   {
     "slug": "docks-cavern-ambush",
