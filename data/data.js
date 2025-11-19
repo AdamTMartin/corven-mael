@@ -299,6 +299,17 @@ window.CORVEN_DATA = [
     "body": "This group of undead warriors first surfaced in 503 s.d., and have since been spotted working to extend the influence of [[apostate-crow]] in several conflicts."
   },
   {
+    "slug": "the-tulls",
+    "type": "Faction",
+    "title": "The Tull Family",
+    "summary": "The Mighty Caravaners",
+    "tags": [
+      "faction",
+      "story"
+    ],
+    "body": "The hill dwarf Tull family have been caravaner’s since the Age of Decadence, when their mighty wagons rolled across Sea of Swaying Grass as members of the Golden Stallion Trading Company. By the time the Cataclysm struck, the family had divided operations between Cymbri and Khüchtei Kar, with the eastern branch holding the reins of power. The Cataclysm sundered the family, leaving the branch in the Bastion to forge a path of their own choosing, led by Jethro, youngest son of the patriarch. He took their diminished resources and focused on doing what they do best: running caravans. Within a century, the Tull’s had become prominent leaders among the Wagoneers, dominating the trade routes flowing out of Cymbri.\r\n\r\nIn the centuries since, the Tull’s have become a fixture on the roads of the Shield Lands. Jethro’s passing placed his eldest son, Jebrin, onto the Guild Council, while his second son, Jovah, took on the task of day to day operations. Jovah is a gruff but even tempered soul, and he has upheld the family reputation for reliability and honesty even as the Guild has come into conflict with many of the powers of the Bastion. Jovah prefers to be in the field, using his fortune to keep the comforts of town on hand no matter how far he is from the restaurants of Cymbri. \r\n\r\nThe Tull’s hold special contracts with the Watchful Orders and the Garit family, which makes them mainstays in the borderland region of the Shield Lands. Jovah himself leads the northern caravan to Garit’s Outpost and the newly built keep established by the Orders, though each year he swears it will be his last. \r\n\r\nRumors have been swirling since late 505 s.d. that the Tulls are considering launching an new caravan route - across the Waste, with the intent of creating a reliable route between the Bastion and the remnants of the Golden Empire of the east. Whether there is any truth to it or not, there are many who are watching closely."
+  },
+  {
     "slug": "tomas-mojon",
     "type": "Person",
     "title": "Tomas Mojon",
