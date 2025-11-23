@@ -38,7 +38,7 @@ window.CORVEN_DATA = [
       "player",
       "protagonist"
     ],
-    "body": "Listen, I don't remember exactly what kind of species Brand is. But I'll say this - he's amazing, and is MUCH taller than [[corven-profile]].\n\nPlayed by O."
+    "body": "Listen, I don't remember exactly what kind of species Brand is. But I'll say this - he's amazing, and is MUCH taller than [[corven-profile]].\n\nPlayed by O.\n\nStolen at a very young age and branded by an offshoot of the Guild. Worked as a miner for Kithalist."
   },
   {
     "slug": "brud-mojon",
@@ -60,7 +60,7 @@ window.CORVEN_DATA = [
       "player",
       "protagonist"
     ],
-    "body": "What's Dwight cooking up!? Sorcerer Supreme, and everybody owes him favors. Linked intrinsically to the caravan leader, just like [[corven-profile]].\n\nPlayed by Dwight."
+    "body": "What's Dwight cooking up!? Sorcerer Supreme, and everybody owes him favors. Linked intrinsically to the caravan leader, just like [[corven-profile]].\n\nPlayed by Dwight.\n\nSpreading the \"word\" of the \"church\""
   },
   {
     "slug": "the-mask",
@@ -108,6 +108,17 @@ window.CORVEN_DATA = [
     "body": "Creation. Creates from nothing."
   },
   {
+    "slug": "garits-outpost",
+    "type": "Place",
+    "title": "Garit's Outpost",
+    "summary": "Northern Outpost near the Wasteland",
+    "tags": [
+      "place",
+      "story"
+    ],
+    "body": "Ravaged by the army of [[the-bellkeeper]]\nA normal spot for the [[the-tulls]] Caravan\nLots of farmers, also has some of [[little-odd-aspen]]'s family"
+  },
+  {
     "slug": "hometown",
     "type": "Place",
     "title": "Hovlin",
@@ -128,6 +139,29 @@ window.CORVEN_DATA = [
       "mojon"
     ],
     "body": "Only daughter of the Mojon family and youngest child. She is the leader of the Regulators, and answers only to The Father and Master Tolstoff. She is in charge of dealing with the enemies of the family."
+  },
+  {
+    "slug": "languages",
+    "type": "Note",
+    "title": "Languages",
+    "summary": "Corven's Known Languages",
+    "tags": [
+      "backstory",
+      "lore",
+      "note"
+    ],
+    "body": "[[corven-profile]] speaks:\n- Common\n- Giant\n- Little bit of Heartlander\n- Scaitian"
+  },
+  {
+    "slug": "little-odd-aspen",
+    "type": "Player",
+    "title": "Little Odd Aspen",
+    "summary": "Might be a Cat, Don't steal my stuff!",
+    "tags": [
+      "player",
+      "protagonist"
+    ],
+    "body": "Tried to steal [[corven-profile]]'s personal ledger. Don't do that again. I've got my beady crow eyes on you.\n\nPlayed by Cherith.\n\nTrying to get home"
   },
   {
     "slug": "little-odd-aspenleaf",
@@ -238,6 +272,16 @@ window.CORVEN_DATA = [
     "body": "\n**Doctrine**: Unshackle the **Quiet God** beneath the horizon.  \n**Iconography**: Black feathers stitched into lips.  \n**Corven’s Tie**: A token traded for a name; the name led him out of a cell. Cost pending.  \n    "
   },
   {
+    "slug": "the-bellkeeper",
+    "type": "Person",
+    "title": "The Bellkeeper",
+    "summary": "The Bellkeeper",
+    "tags": [
+      "antagonist"
+    ],
+    "body": "Gathering an army, cult? Many groups, cadre, hobgoblin captain is answering their call\nUnderground fortification\nSummoned by Bellkeeper, go through pillars with the rock, transported\n[[valley-of-the-caves]]\n\nOutpost north of the Watchful Keep - Garit's Outpost? Got star anise from something there\nNecromancer magister, with a penchant for curiosity into the macabre"
+  },
+  {
     "slug": "hollow-men",
     "type": "Faction",
     "title": "The Hollow Men",
@@ -272,6 +316,28 @@ window.CORVEN_DATA = [
       "mojon"
     ],
     "body": "The Known [[mojon-mining-consortium]] Family Members:\n- [[pallus-mojon]], aka The Old Man, the Patriarch, Father.\n- [[brud-mojon]], aka The Hammer\n- [[devid-mojon]], aka The Recluse\n- [[pallus-mojon-iii]], Head of Consortium Operations\n- [[tomas-mojon]], the youngest son\n- [[kalista-mojon]], aka The Daughter"
+  },
+  {
+    "slug": "cape-of-faces",
+    "type": "Person",
+    "title": "The One Who Calls's Master",
+    "summary": "A much better knight than a knight",
+    "tags": [
+      "person",
+      "antagonist"
+    ],
+    "body": "Takes faces\nIf he takes a face, he can wear it"
+  },
+  {
+    "slug": "the-red-hand",
+    "type": "Person",
+    "title": "The Red Hand",
+    "summary": "TBD",
+    "tags": [
+      "person",
+      "antagonist"
+    ],
+    "body": "TBD"
   },
   {
     "slug": "regulators",
@@ -321,6 +387,17 @@ window.CORVEN_DATA = [
     "body": "he has been at the Collegium for the last five years, studying medicine. He seems to have no involvement with the family business."
   },
   {
+    "slug": "valley-of-the-caves",
+    "type": "Place",
+    "title": "Valley Of The Caves",
+    "summary": "Caves of Chaos",
+    "tags": [
+      "place",
+      "story"
+    ],
+    "body": "The Caves of Chaos have been here since pre-Cataclysm\nAfter the Cataclysm, outputs were built up on the earth that was torn up\nFlares of natural power and magical things show up at the Caves of Chaos\nThe army of [[the-bellkeeper]] use these for transportation, allegedly"
+  },
+  {
     "slug": "willa-mae",
     "type": "Player",
     "title": "Willa-Mae",
@@ -330,5 +407,16 @@ window.CORVEN_DATA = [
       "protagonist"
     ],
     "body": "Sorry [[corven-profile]] keeps copying your voice! He can't help it! You are very strong though.\n\nPlayed by Cheyenne."
+  },
+  {
+    "slug": "willa-mae-rose",
+    "type": "Player",
+    "title": "Willa-Mae Rose",
+    "summary": "The Southern Halfling",
+    "tags": [
+      "player",
+      "protagonist"
+    ],
+    "body": "Sorry [[corven-profile]] keeps copying your voice! He can't help it! You are very strong though.\n\nPlayed by Cheyenne.\n\nLost her honor, trying to recover something that was stolen from her."
   }
 ];
