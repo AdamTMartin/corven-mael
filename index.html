@@ -21,11 +21,12 @@
     header{max-width:1100px;margin:40px auto 10px;padding:0 20px 0 60px;position:relative}
     h1{margin:0 0 10px;letter-spacing:.3px}
     .sub{color:var(--muted)}
+    .hint{color:var(--muted); font-size:14px; margin-top:4px}
     .toolbar{display:grid;gap:12px;grid-template-columns:1fr;margin:18px 0 6px}
     .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
     input[type=search]{width:100%;padding:14px 16px;border-radius:var(--radius);background:var(--panel);color:var(--text);
       border:1px solid #1e2634;outline:none}
-    input[type=search]:focus{box-shadow:var(--ring);border-color:var(--accent)}
+    input[type=search]:focus-visible{box-shadow:var(--ring);border-color:var(--accent)}
     .filters{display:flex;gap:8px;flex-wrap:wrap}
     .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:var(--chip);
       border:1px solid var(--chip-border);color:var(--muted);cursor:pointer;user-select:none}
@@ -103,22 +104,30 @@
     .menu .menu-item:hover{ border-color:var(--accent); color:#fff }
     .backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; z-index:999 }
     .backdrop.show{ display:block }
+    button:focus-visible,.chip:focus-visible,.permalink:focus-visible{
+      outline:2px solid var(--accent); outline-offset:2px; box-shadow:var(--ring);
+    }
   </style>
 </head>
 <body>
   <header>
-    <button class="burger" id="burger" title="Menu"><span></span></button>
+    <button class="burger" id="burger" type="button" title="Menu" aria-label="Open navigation" aria-expanded="false" aria-controls="menu"><span></span></button>
     <h1>Corven Lore Lookup</h1>
-    <div class="sub">A living, searchable lore bible for Corven—people, places, events, items, and journal entries.</div>
+    <div class="sub">A living, searchable lore bible for Corven-people, places, events, items, and journal entries.</div>
+    <div class="hint">Browse the lore cards, jump to the graph, or switch over to the campaign journal view.</div>
     <div class="toolbar">
-      <input id="q" type="search" placeholder="Search by title, tags, content… (try: 'Apostate Crow', 'Mojon', 'mentor')" />
+      <input id="q" type="search" placeholder="Search by title, tags, content (try: 'Apostate Crow', 'Mojon', 'mentor')" aria-label="Search lore and journal" />
       <div class="row">
         <div class="filters" id="typeFilters"></div>
         <div class="filters" id="tagFilters"></div>
-        <button id="toggleView" class="chip" title="Switch between Cards and Graph">Graph View</button>
+        <button id="toggleView" class="chip" type="button" title="Switch between Cards and Graph" aria-label="Switch between cards and graph" aria-pressed="false">Graph View</button>
       </div>
     </div>
     <div class="counts" id="counts"></div>
+    <div class="row meta" id="viewPrompts">
+      <button id="journalPrompt" class="chip action" type="button" title="Jump to the journal view">Open Journal</button>
+      <button id="cardsPrompt" class="chip action" type="button" title="Back to lore cards" style="display:none;">Cards View</button>
+    </div>
   </header>
 
   <div class="container">
@@ -145,11 +154,11 @@
   </div>
 
   <!-- Slide-out menu -->
-  <div class="menu" id="menu">
+  <div class="menu" id="menu" role="navigation" aria-label="View selector">
     <h3>Navigate</h3>
-    <button class="menu-item" data-target="cards">Lore (Cards)</button>
-    <button class="menu-item" data-target="graph">Lore (Graph)</button>
-    <button class="menu-item" data-target="journal">Journal</button>
+    <button class="menu-item" type="button" data-target="cards">Lore (Cards)</button>
+    <button class="menu-item" type="button" data-target="graph">Lore (Graph)</button>
+    <button class="menu-item" type="button" data-target="journal">Journal</button>
   </div>
   <div class="backdrop" id="backdrop"></div>
 
@@ -253,13 +262,15 @@
         const all=allJournalTags();
         const visible = state.showAllJournalTags ? all : all.slice(0, TAG_LIMIT);
         visible.forEach(({tag})=>{
-          const chip=document.createElement('button'); chip.className='chip'; chip.textContent=`#${tag}`;
+          const chip=document.createElement('button'); chip.className='chip'; chip.type='button'; chip.textContent=`#${tag}`;
           chip.setAttribute('data-active', state.activeTags.has(tag)?'true':'false');
+          chip.setAttribute('aria-pressed', state.activeTags.has(tag)?'true':'false');
+          chip.setAttribute('aria-label', `Filter journal by tag ${tag}`);
           chip.addEventListener('click',()=>{ state.activeTags.has(tag)?state.activeTags.delete(tag):state.activeTags.add(tag); render(); });
           tagWrap.appendChild(chip);
         });
         if(all.length > TAG_LIMIT){
-          const more=document.createElement('button'); more.className='chip action';
+          const more=document.createElement('button'); more.className='chip action'; more.type='button';
           more.textContent = state.showAllJournalTags ? 'Show less tags' : `Show more tags (+${all.length - TAG_LIMIT})`;
           more.addEventListener('click',()=>{ state.showAllJournalTags=!state.showAllJournalTags; renderFilters(); });
           tagWrap.appendChild(more);
@@ -267,21 +278,25 @@
       } else {
         // Cards / Graph
         TYPES.forEach(t=>{
-          const chip=document.createElement('button'); chip.className='chip'; chip.textContent=t;
+          const chip=document.createElement('button'); chip.className='chip'; chip.type='button'; chip.textContent=t;
           chip.setAttribute('data-active', state.activeTypes.has(t)?'true':'false');
+          chip.setAttribute('aria-pressed', state.activeTypes.has(t)?'true':'false');
+          chip.setAttribute('aria-label', `Filter lore by type ${t}`);
           chip.addEventListener('click',()=>{ state.activeTypes.has(t)?state.activeTypes.delete(t):state.activeTypes.add(t); render(); });
           typeWrap.appendChild(chip);
         });
         const all=allLoreTags();
         const visible = state.showAllTags ? all : all.slice(0, TAG_LIMIT);
         visible.forEach(({tag})=>{
-          const chip=document.createElement('button'); chip.className='chip'; chip.textContent=`#${tag}`;
+          const chip=document.createElement('button'); chip.className='chip'; chip.type='button'; chip.textContent=`#${tag}`;
           chip.setAttribute('data-active', state.activeTags.has(tag)?'true':'false');
+          chip.setAttribute('aria-pressed', state.activeTags.has(tag)?'true':'false');
+          chip.setAttribute('aria-label', `Filter lore by tag ${tag}`);
           chip.addEventListener('click',()=>{ state.activeTags.has(tag)?state.activeTags.delete(tag):state.activeTags.add(tag); render(); });
           tagWrap.appendChild(chip);
         });
         if(all.length > TAG_LIMIT){
-          const more=document.createElement('button'); more.className='chip action';
+          const more=document.createElement('button'); more.className='chip action'; more.type='button';
           more.textContent = state.showAllTags ? 'Show less tags' : `Show more tags (+${all.length - TAG_LIMIT})`;
           more.addEventListener('click',()=>{ state.showAllTags=!state.showAllTags; renderFilters(); });
           tagWrap.appendChild(more);
@@ -326,7 +341,7 @@
     // --- Cards view ---
     function renderCards(rows){
       const res=document.getElementById('results'), empty=document.getElementById('empty'), counts=document.getElementById('counts');
-      counts.textContent=`${rows.length} result${rows.length===1?'':'s'} · ${state.data.length} total lore entries`;
+      counts.textContent=`${rows.length} result${rows.length===1?'':'s'} / ${state.data.length} total lore entries`;
       if(rows.length===0){ res.innerHTML=''; empty.style.display='block'; return; }
       empty.style.display='none';
 
@@ -336,10 +351,10 @@
         const bodyHTML=linkBody(marked.parse(e.body||''),state.data);
         return `
           <article class="card" id="${e.slug}">
-            <button class="permalink" data-slug="${e.slug}" title="Copy link">Link</button>
+            <button class="permalink" data-slug="${e.slug}" title="Copy link" aria-label="Copy link to ${e.title}">Link</button>
             <div class="type">${e.type}</div>
             <h3 class="title">${e.title}</h3>
-            <div class="meta">${date}${e.summary ? (date?' · ':'') + e.summary : ''}</div>
+            <div class="meta">${date}${e.summary ? (date?' / ':'') + e.summary : ''}</div>
             <div class="tags">${tags}</div>
             <div class="body">${bodyHTML}</div>
           </article>
@@ -407,7 +422,7 @@
       const empty=document.getElementById('journalEmpty');
       const counts=document.getElementById('counts');
 
-      counts.textContent = `${rows.length} journal entr${rows.length===1?'y':'ies'} · ${state.journal.length} total`;
+      counts.textContent = `${rows.length} journal entr${rows.length===1?'y':'ies'} / ${state.journal.length} total`;
 
       if(rows.length===0){ surface.innerHTML=''; empty.style.display='block'; return; }
       empty.style.display='none';
@@ -435,7 +450,7 @@
             <section class="journal-entry" id="journal-${e.slug}">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
                 <h3 class="journal-title">${e.title || '(untitled)'}</h3>
-                <button class="chip" data-jpermalink="${e.slug}" title="Copy link">Link</button>
+                <button class="chip" data-jpermalink="${e.slug}" title="Copy link" aria-label="Copy link to journal entry ${e.title}" type="button">Link</button>
               </div>
               <div class="journal-date">${pretty}${e.date && k==='Undated' ? '' : ''}</div>
               <div class="journal-tags">${tags}</div>
@@ -471,7 +486,9 @@
       const btn=document.getElementById('toggleView'),
             cardsWrap=document.getElementById('cardsWrap'),
             graphWrap=document.getElementById('graphWrap'),
-            journalWrap=document.getElementById('journalWrap');
+            journalWrap=document.getElementById('journalWrap'),
+            journalPrompt=document.getElementById('journalPrompt'),
+            cardsPrompt=document.getElementById('cardsPrompt');
 
       // show/hide sections
       cardsWrap.style.display = (mode==='cards') ? 'block' : 'none';
@@ -480,6 +497,11 @@
 
       // button label
       btn.textContent = (mode==='graph') ? 'Cards View' : 'Graph View';
+      btn.setAttribute('aria-pressed', mode==='graph' ? 'true' : 'false');
+      btn.setAttribute('aria-label', mode==='graph' ? 'Switch to cards view' : 'Switch to graph view');
+
+      if(journalPrompt){ journalPrompt.style.display = mode==='journal' ? 'none' : 'inline-flex'; }
+      if(cardsPrompt){ cardsPrompt.style.display = mode==='journal' ? 'inline-flex' : 'none'; }
 
       // reset type/tag filters when switching modes to avoid confusion
       if(mode==='journal'){ state.activeTypes.clear(); state.activeTags.clear(); state.showAllTags=false; }
@@ -493,7 +515,7 @@
     function render(){
       if(viewState.mode==='graph'){
         const rows=queryLore();
-        document.getElementById('counts').textContent=`${rows.length} node${rows.length===1?'':'s'} in graph · ${state.data.length} total lore entries`;
+        document.getElementById('counts').textContent=`${rows.length} node${rows.length===1?'':'s'} in graph / ${state.data.length} total lore entries`;
         renderGraph(rows);
       } else if(viewState.mode==='journal'){
         const rows=queryJournal();
@@ -506,14 +528,19 @@
     // Events
     document.getElementById('q').addEventListener('input', e=>{ state.q=e.target.value; render(); });
     document.getElementById('toggleView').addEventListener('click', ()=>{ toggleTo(viewState.mode==='cards'?'graph':'cards'); });
+    const journalPromptBtn=document.getElementById('journalPrompt');
+    const cardsPromptBtn=document.getElementById('cardsPrompt');
+    if(journalPromptBtn){ journalPromptBtn.addEventListener('click', ()=>{ toggleTo('journal'); render(); }); }
+    if(cardsPromptBtn){ cardsPromptBtn.addEventListener('click', ()=>{ toggleTo('cards'); render(); }); }
     window.addEventListener('resize', ()=>{ if(viewState.mode==='graph' && viewState.cy){ viewState.cy.resize(); viewState.cy.fit(undefined,30); } });
 
     // Burger menu logic
     const burger=document.getElementById('burger');
     const menu=document.getElementById('menu');
     const backdrop=document.getElementById('backdrop');
-    function openMenu(){ menu.classList.add('open'); backdrop.classList.add('show'); }
-    function closeMenu(){ menu.classList.remove('open'); backdrop.classList.remove('show'); }
+    menu.setAttribute('aria-hidden','true');
+    function openMenu(){ menu.classList.add('open'); backdrop.classList.add('show'); burger.setAttribute('aria-expanded','true'); menu.setAttribute('aria-hidden','false'); }
+    function closeMenu(){ menu.classList.remove('open'); backdrop.classList.remove('show'); burger.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true'); }
     burger.addEventListener('click', openMenu);
     backdrop.addEventListener('click', closeMenu);
     menu.querySelectorAll('.menu-item').forEach(btn=>{
@@ -552,3 +579,6 @@
   </script>
 </body>
 </html>
+
+
+
