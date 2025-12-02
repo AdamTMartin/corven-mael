@@ -44,6 +44,17 @@
     .type{position:absolute;top:12px;right:12px;font-size:12px;color:var(--muted);border:1px solid #273149;background:#0f1521;
       padding:4px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px}
     .title{margin:0 0 6px;font-size:18px;letter-spacing:.2px}
+    /* List view */
+    #listWrap{display:none}
+    .list{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+    .list-item{background:linear-gradient(180deg,#111722 0%,#0e141d 100%);border:1px solid #1f2a3b;border-radius:12px;padding:12px 14px;
+      display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;cursor:pointer;transition:border-color .15s ease,box-shadow .15s ease}
+    .list-item:hover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(70,211,255,.15)}
+    .list-item .title{margin:0;font-size:16px}
+    .list-item .meta{font-size:13px;color:var(--muted)}
+    .list-item .summary{color:#dbe6f9;font-size:14px;margin:4px 0 0}
+    .list-tags{display:flex;gap:6px;flex-wrap:wrap}
+    .list-item .permalink{position:static;margin-left:6px}
     .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
     .tag{font-size:12px;color:#b7c2d8;border:1px dashed #2b3550;padding:4px 8px;border-radius:999px}
     .body{margin-top:10px;color:#dbe6f9}
@@ -114,13 +125,14 @@
     <button class="burger" id="burger" type="button" title="Menu" aria-label="Open navigation" aria-expanded="false" aria-controls="menu"><span></span></button>
     <h1>Corven Lore Lookup</h1>
     <div class="sub">A living, searchable lore bible for Corven-people, places, events, items, and journal entries.</div>
-    <div class="hint">Browse the lore cards, jump to the graph, or switch over to the campaign journal view.</div>
+    <div class="hint">Browse lore as cards or a compact list, jump to the graph, or switch over to the campaign journal view.</div>
     <div class="toolbar">
       <input id="q" type="search" placeholder="Search by title, tags, content (try: 'Apostate Crow', 'Mojon', 'mentor')" aria-label="Search lore and journal" />
       <div class="row">
         <div class="filters" id="typeFilters"></div>
         <div class="filters" id="tagFilters"></div>
         <button id="toggleView" class="chip" type="button" title="Switch between Cards and Graph" aria-label="Switch between cards and graph" aria-pressed="false">Graph View</button>
+        <button id="listView" class="chip" type="button" title="Switch between Cards and List" aria-label="Switch between cards and list" aria-pressed="false">List View</button>
       </div>
     </div>
     <div class="counts" id="counts"></div>
@@ -135,6 +147,12 @@
     <div id="cardsWrap">
       <div id="results" class="grid"></div>
       <div id="empty" class="empty" style="display:none;">No matching entries. Try fewer filters or a different search.</div>
+    </div>
+
+    <!-- List -->
+    <div id="listWrap">
+      <ul id="listResults" class="list"></ul>
+      <div id="listEmpty" class="empty" style="display:none;">No matching entries. Try fewer filters or a different search.</div>
     </div>
 
     <!-- Graph -->
@@ -157,6 +175,7 @@
   <div class="menu" id="menu" role="navigation" aria-label="View selector">
     <h3>Navigate</h3>
     <button class="menu-item" type="button" data-target="cards">Lore (Cards)</button>
+    <button class="menu-item" type="button" data-target="list">Lore (List)</button>
     <button class="menu-item" type="button" data-target="graph">Lore (Graph)</button>
     <button class="menu-item" type="button" data-target="journal">Journal</button>
   </div>
@@ -376,6 +395,52 @@
       });
     }
 
+    // --- List view ---
+    function renderList(rows){
+      const wrap=document.getElementById('listWrap');
+      const list=document.getElementById('listResults');
+      const empty=document.getElementById('listEmpty');
+      const counts=document.getElementById('counts');
+      counts.textContent=`${rows.length} result${rows.length===1?'':'s'} / ${state.data.length} total lore entries`;
+
+      if(rows.length===0){ list.innerHTML=''; empty.style.display='block'; return; }
+      empty.style.display='none';
+
+      list.innerHTML = rows.map(e=>{
+        const tags=(e.tags||[]).map(t=>`<span class="tag">#${t}</span>`).join('');
+        const date=e.date?`<span class="meta">${new Date(e.date).toLocaleDateString()}</span>`:'';
+        const summary=e.summary || '';
+        return `
+          <li class="list-item" data-slug="${e.slug}" tabindex="0">
+            <div>
+              <div class="meta">${e.type}${date ? ' · ' + date : ''}</div>
+              <h3 class="title">${e.title}</h3>
+              <div class="summary">${summary}</div>
+              <div class="list-tags">${tags}</div>
+            </div>
+            <div style="display:flex;align-items:center;">
+              <button class="permalink" data-slug="${e.slug}" title="Copy link" aria-label="Copy link to ${e.title}" type="button">Link</button>
+            </div>
+          </li>
+        `;
+      }).join('');
+
+      list.querySelectorAll('.permalink').forEach(btn=>{
+        btn.addEventListener('click', async (ev)=>{
+          ev.stopPropagation();
+          const slug=btn.getAttribute('data-slug'); setSlugInURL(slug); await copyPermalink(slug);
+          btn.textContent="Copied!"; setTimeout(()=>btn.textContent="Link",900);
+        });
+      });
+
+      list.querySelectorAll('.list-item').forEach(li=>{
+        const slug=li.getAttribute('data-slug');
+        const openCard=()=>{ setSlugInURL(slug); toggleTo('cards', false); focusBySlug(slug,true); };
+        li.addEventListener('click', openCard);
+        li.addEventListener('keypress',(e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openCard(); } });
+      });
+    }
+
     // --- Graph view ---
     function buildGraphElements(rows){
       const nodes=new Map(), edges=new Map(), bySlug=new Map(rows.map(r=>[r.slug,r]));
@@ -484,8 +549,10 @@
     function toggleTo(mode,rerender=true){
       viewState.mode=mode;
       const btn=document.getElementById('toggleView'),
+            listBtn=document.getElementById('listView'),
             cardsWrap=document.getElementById('cardsWrap'),
             graphWrap=document.getElementById('graphWrap'),
+            listWrap=document.getElementById('listWrap'),
             journalWrap=document.getElementById('journalWrap'),
             journalPrompt=document.getElementById('journalPrompt'),
             cardsPrompt=document.getElementById('cardsPrompt');
@@ -493,12 +560,18 @@
       // show/hide sections
       cardsWrap.style.display = (mode==='cards') ? 'block' : 'none';
       graphWrap.style.display = (mode==='graph') ? 'block' : 'none';
+      listWrap.style.display = (mode==='list') ? 'block' : 'none';
       journalWrap.style.display = (mode==='journal') ? 'block' : 'none';
 
       // button label
       btn.textContent = (mode==='graph') ? 'Cards View' : 'Graph View';
       btn.setAttribute('aria-pressed', mode==='graph' ? 'true' : 'false');
       btn.setAttribute('aria-label', mode==='graph' ? 'Switch to cards view' : 'Switch to graph view');
+      if(listBtn){
+        listBtn.textContent = (mode==='list') ? 'Cards View' : 'List View';
+        listBtn.setAttribute('aria-pressed', mode==='list' ? 'true' : 'false');
+        listBtn.setAttribute('aria-label', mode==='list' ? 'Switch to cards view' : 'Switch to list view');
+      }
 
       if(journalPrompt){ journalPrompt.style.display = mode==='journal' ? 'none' : 'inline-flex'; }
       if(cardsPrompt){ cardsPrompt.style.display = mode==='journal' ? 'inline-flex' : 'none'; }
@@ -517,6 +590,9 @@
         const rows=queryLore();
         document.getElementById('counts').textContent=`${rows.length} node${rows.length===1?'':'s'} in graph / ${state.data.length} total lore entries`;
         renderGraph(rows);
+      } else if(viewState.mode==='list'){
+        const rows=queryLore();
+        renderList(rows);
       } else if(viewState.mode==='journal'){
         const rows=queryJournal();
         renderJournal(rows);
@@ -527,7 +603,8 @@
 
     // Events
     document.getElementById('q').addEventListener('input', e=>{ state.q=e.target.value; render(); });
-    document.getElementById('toggleView').addEventListener('click', ()=>{ toggleTo(viewState.mode==='cards'?'graph':'cards'); });
+    document.getElementById('toggleView').addEventListener('click', ()=>{ toggleTo(viewState.mode==='graph'?'cards':'graph'); render(); });
+    document.getElementById('listView').addEventListener('click', ()=>{ toggleTo(viewState.mode==='list'?'cards':'list'); render(); });
     const journalPromptBtn=document.getElementById('journalPrompt');
     const cardsPromptBtn=document.getElementById('cardsPrompt');
     if(journalPromptBtn){ journalPromptBtn.addEventListener('click', ()=>{ toggleTo('journal'); render(); }); }
@@ -553,11 +630,14 @@
 
     // Boot
     buildIndex();
-    // Respect ?view=journal on initial load
+    // Respect ?view on initial load
     const init = currentSlugFromURL();
     const qs = new URLSearchParams(location.search);
     const want = (qs.get('view')||'').toLowerCase();
-    if(want==='journal'){ toggleTo('journal', false); } else { toggleTo('cards', false); }
+    if(want==='journal'){ toggleTo('journal', false); }
+    else if(want==='graph'){ toggleTo('graph', false); }
+    else if(want==='list'){ toggleTo('list', false); }
+    else { toggleTo('cards', false); }
     renderFilters();
     render();
 
