@@ -76,6 +76,11 @@
     /* Graph */
     #graphWrap{display:none}
     #graph{height:72vh;min-height:420px;background:#0f141d;border:1px solid #1e2634;border-radius:14px}
+    .graph-controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center;color:var(--muted);font-size:14px}
+    .graph-controls select,.graph-controls input[type=search]{background:#0f1521;border:1px solid #263149;color:var(--text);border-radius:10px;padding:8px 10px}
+    .graph-controls button{background:#121a28;border:1px solid #263149;color:#d5e5ff;border-radius:10px;padding:8px 12px;cursor:pointer}
+    .graph-controls button:hover{border-color:var(--accent);color:#fff}
+    .dim{opacity:0.25}
     .legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:8px 0 0}
     .legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
 
@@ -158,6 +163,20 @@
     <!-- Graph -->
     <div id="graphWrap">
       <div id="graph"></div>
+      <div class="graph-controls">
+        <label for="graphLayout" class="meta">Layout</label>
+        <select id="graphLayout" aria-label="Select graph layout">
+          <option value="cose" selected>Cose</option>
+          <option value="concentric">Concentric</option>
+          <option value="circle">Circle</option>
+          <option value="breadthfirst">Breadthfirst</option>
+        </select>
+        <button id="graphReset" type="button" title="Reset view">Reset</button>
+        <button id="graphNeighbors" type="button" aria-pressed="false" title="Highlight neighbors">Highlight neighbors</button>
+        <button id="graphExport" type="button" title="Download PNG">Export PNG</button>
+        <input id="graphSearch" type="search" placeholder="Find node (title or slug)" aria-label="Find node in graph" />
+        <button id="graphSearchBtn" type="button" title="Find node">Go</button>
+      </div>
       <div id="graphHelp" class="meta" style="margin-top:6px;">
         Tip: click a node to open the entry; <span class="kbd">Shift</span> + click opens it in a new tab. Layout adapts to the current filters and search.
       </div>
@@ -251,7 +270,7 @@
       fuse:null, jfuse:null,
       showAllTags:false, showAllJournalTags:false
     };
-    let viewState={ mode:'cards', cy:null };
+    let viewState={ mode:'cards', cy:null, layout:'cose', highlightNeighbors:false };
 
     // Build search indexes
     function buildIndex(){
@@ -458,6 +477,7 @@
       const wrap=document.getElementById('graph');
       if(viewState.cy){ viewState.cy.destroy(); viewState.cy=null; }
       const elements=buildGraphElements(rows);
+      const layoutName=viewState.layout || 'cose';
       viewState.cy=cytoscape({
         container:wrap, elements,
         style:[
@@ -468,17 +488,70 @@
           { selector:'edge', style:{ 'line-color':'#35507a','target-arrow-color':'#35507a','target-arrow-shape':'triangle','curve-style':'bezier','width':1.5 } },
           { selector:'node:selected', style:{ 'border-width':3,'border-color':'#46d3ff' } }
         ],
-        layout:{ name:'cose', animate:true, padding:30, nodeOverlap:8 }
+        layout:{ name:layoutName, animate:true, padding:30, nodeOverlap:8 }
       });
       viewState.cy.on('tap','node',(evt)=>{
         const slug=evt.target.data('id');
         if(evt.originalEvent && evt.originalEvent.shiftKey){
           const url=new URL(window.location.href); url.hash=slug; url.searchParams.set('slug',slug); window.open(url.toString(),'_blank'); return;
         }
+        applyNeighborHighlight(evt.target);
         setSlugInURL(slug); focusBySlug(slug,true);
       });
+      viewState.cy.on('tap',(evt)=>{ if(evt.target===viewState.cy){ applyNeighborHighlight(null); } });
       const legend=document.getElementById('legend');
       legend.innerHTML=Object.entries(TYPE_COLOR).map(([type,color])=>`<span><span class="dot" style="background:${color}"></span>${type}</span>`).join('');
+
+      // Sync UI controls to current layout/highlight state
+      const layoutSelect=document.getElementById('graphLayout');
+      if(layoutSelect){ layoutSelect.value=layoutName; }
+      const neighborBtn=document.getElementById('graphNeighbors');
+      if(neighborBtn){ neighborBtn.setAttribute('aria-pressed', viewState.highlightNeighbors?'true':'false'); neighborBtn.textContent = viewState.highlightNeighbors ? 'Neighbors: on' : 'Highlight neighbors'; }
+      applyNeighborHighlight(null);
+    }
+
+    function applyNeighborHighlight(node){
+      if(!viewState.cy) return;
+      viewState.cy.elements().removeClass('dim');
+      if(!viewState.highlightNeighbors) return;
+      if(!node){ return; }
+      const hood=node.closedNeighborhood();
+      viewState.cy.elements().difference(hood).addClass('dim');
+    }
+
+    function runGraphLayout(name){
+      if(!viewState.cy) return;
+      viewState.layout=name;
+      const opts={ name, padding:30, animate:true, fit:true, nodeOverlap:8 };
+      if(name==='breadthfirst') opts.directed=true;
+      viewState.cy.layout(opts).run();
+    }
+
+    function resetGraphView(){
+      if(!viewState.cy) return;
+      viewState.cy.elements().removeClass('dim');
+      viewState.highlightNeighbors=false;
+      const neighborBtn=document.getElementById('graphNeighbors');
+      if(neighborBtn){ neighborBtn.setAttribute('aria-pressed','false'); neighborBtn.textContent='Highlight neighbors'; }
+      runGraphLayout(viewState.layout || 'cose');
+    }
+
+    function graphSearch(query){
+      if(!viewState.cy) return;
+      const q=(query||'').trim().toLowerCase();
+      if(!q) return;
+      const node=viewState.cy.nodes().toArray().find(n=>{
+        const id=(n.data('id')||'').toLowerCase();
+        const label=(n.data('label')||'').toLowerCase();
+        return id===q || label.includes(q);
+      });
+      if(node){
+        viewState.cy.elements().unselect();
+        node.select();
+        viewState.cy.fit(node, 80);
+        applyNeighborHighlight(node);
+        setSlugInURL(node.data('id'));
+      }
     }
 
     // --- Journal view ---
@@ -609,6 +682,31 @@
     const cardsPromptBtn=document.getElementById('cardsPrompt');
     if(journalPromptBtn){ journalPromptBtn.addEventListener('click', ()=>{ toggleTo('journal'); render(); }); }
     if(cardsPromptBtn){ cardsPromptBtn.addEventListener('click', ()=>{ toggleTo('cards'); render(); }); }
+    const graphLayoutSelect=document.getElementById('graphLayout');
+    if(graphLayoutSelect){ graphLayoutSelect.addEventListener('change', (e)=>{ runGraphLayout(e.target.value); applyNeighborHighlight(null); }); }
+    const graphReset=document.getElementById('graphReset');
+    if(graphReset){ graphReset.addEventListener('click', resetGraphView); }
+    const graphNeighborsBtn=document.getElementById('graphNeighbors');
+    if(graphNeighborsBtn){
+      graphNeighborsBtn.addEventListener('click', ()=>{
+        viewState.highlightNeighbors=!viewState.highlightNeighbors;
+        graphNeighborsBtn.setAttribute('aria-pressed', viewState.highlightNeighbors?'true':'false');
+        graphNeighborsBtn.textContent = viewState.highlightNeighbors ? 'Neighbors: on' : 'Highlight neighbors';
+        applyNeighborHighlight(null);
+      });
+    }
+    const graphExportBtn=document.getElementById('graphExport');
+    if(graphExportBtn){
+      graphExportBtn.addEventListener('click', ()=>{
+        if(!viewState.cy) return;
+        const png=viewState.cy.png({ full:true, scale:2, bg:'#0f141d' });
+        const a=document.createElement('a'); a.href=png; a.download='corven-graph.png'; a.click();
+      });
+    }
+    const graphSearchInput=document.getElementById('graphSearch');
+    const graphSearchBtn=document.getElementById('graphSearchBtn');
+    if(graphSearchBtn){ graphSearchBtn.addEventListener('click', ()=>{ graphSearch(graphSearchInput.value); }); }
+    if(graphSearchInput){ graphSearchInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ graphSearch(graphSearchInput.value); } }); }
     window.addEventListener('resize', ()=>{ if(viewState.mode==='graph' && viewState.cy){ viewState.cy.resize(); viewState.cy.fit(undefined,30); } });
 
     // Burger menu logic
