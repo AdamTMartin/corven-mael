@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:data": "node scripts/fetch-sheet.mjs"
+    "build:data": "node scripts/fetch-sheet.mjs",
+    "lint:data": "node scripts/validate-data.mjs"
   }
 }
