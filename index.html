@@ -83,6 +83,12 @@
     .dim{opacity:0.25}
     .legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:8px 0 0}
     .legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+    .graph-filter{position:relative}
+    .graph-filter button{min-width:90px}
+    .graph-filter .panel{position:absolute;top:110%;left:0;z-index:900;background:#0e141f;border:1px solid #1f2a3b;border-radius:12px;padding:10px;width:240px;box-shadow:0 12px 30px rgba(0,0,0,0.35)}
+    .graph-filter .panel h4{margin:0 0 6px;color:#dbe6f9;font-size:14px}
+    .graph-filter .panel .actions{display:flex;gap:6px;margin-bottom:6px}
+    .graph-filter .panel label{display:flex;align-items:center;gap:8px;color:#d5e0f5;font-size:13px;padding:4px 2px}
     /* References */
     #refsWrap{display:none}
     .refs-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin-top:12px}
@@ -193,6 +199,17 @@
         <button id="graphExport" type="button" title="Download PNG">Export PNG</button>
         <input id="graphSearch" type="search" placeholder="Find node (title or slug)" aria-label="Find node in graph" />
         <button id="graphSearchBtn" type="button" title="Find node">Go</button>
+        <div class="graph-filter">
+          <button id="graphTypeToggle" type="button" aria-expanded="false">Filter types</button>
+          <div id="graphTypePanel" class="panel" style="display:none;">
+            <h4>Show types</h4>
+            <div class="actions">
+              <button type="button" id="graphTypeAll">Select all</button>
+              <button type="button" id="graphTypeNone">Deselect all</button>
+            </div>
+            <div id="graphTypeList"></div>
+          </div>
+        </div>
       </div>
       <div id="graphHelp" class="meta" style="margin-top:6px;">
         Tip: click a node to open the entry; <span class="kbd">Shift</span> + click opens it in a new tab. Layout adapts to the current filters and search.
@@ -302,7 +319,7 @@
       fuse:null, jfuse:null,
       showAllTags:false, showAllJournalTags:false
     };
-    let viewState={ mode:'cards', cy:null, layout:'cose', highlightNeighbors:false };
+    let viewState={ mode:'cards', cy:null, layout:'cose', highlightNeighbors:false, graphTypeFilter:null };
 
     // Build search indexes
     function buildIndex(){
@@ -531,10 +548,23 @@
       });
       return [...nodes.values(), ...edges.values()];
     }
+    function graphTypes(){
+      const set=new Set();
+      state.data.forEach(e=>{ if(e.type) set.add(e.type); });
+      return [...set].sort();
+    }
+
+    function applyGraphTypeFilter(rows){
+      if(viewState.graphTypeFilter===null) return rows; // null means "all types"
+      if(viewState.graphTypeFilter.size===0) return []; // empty set means "show none"
+      return rows.filter(r=>viewState.graphTypeFilter.has(r.type));
+    }
+
     function renderGraph(rows){
       const wrap=document.getElementById('graph');
       if(viewState.cy){ viewState.cy.destroy(); viewState.cy=null; }
-      const elements=buildGraphElements(rows);
+      const filteredRows=applyGraphTypeFilter(rows);
+      const elements=buildGraphElements(filteredRows);
       const layoutName=viewState.layout || 'cose';
       viewState.cy=cytoscape({
         container:wrap, elements,
@@ -736,7 +766,8 @@
     function render(){
       if(viewState.mode==='graph'){
         const rows=queryLore();
-        document.getElementById('counts').textContent=`${rows.length} node${rows.length===1?'':'s'} in graph / ${state.data.length} total lore entries`;
+        const filtered=applyGraphTypeFilter(rows);
+        document.getElementById('counts').textContent=`${filtered.length} node${filtered.length===1?'':'s'} in graph / ${rows.length} filtered lore / ${state.data.length} total lore entries`;
         renderGraph(rows);
       } else if(viewState.mode==='list'){
         const rows=queryLore();
@@ -789,6 +820,57 @@
     const refModalClose=document.getElementById('refModalClose');
     if(refModalClose){ refModalClose.addEventListener('click', closeRefModal); }
     if(refModal){ refModal.addEventListener('click',(e)=>{ if(e.target===refModal){ closeRefModal(); } }); }
+    const graphTypeToggle=document.getElementById('graphTypeToggle');
+    const graphTypePanel=document.getElementById('graphTypePanel');
+    const graphTypeList=document.getElementById('graphTypeList');
+    const graphTypeAll=document.getElementById('graphTypeAll');
+    const graphTypeNone=document.getElementById('graphTypeNone');
+    function syncGraphTypeUI(){
+      if(!graphTypeList) return;
+      const types=graphTypes();
+      graphTypeList.innerHTML=types.map(t=>{
+        const checked = (viewState.graphTypeFilter===null) || viewState.graphTypeFilter.has(t);
+        return `<label><input type="checkbox" data-graph-type="${t}" ${checked?'checked':''}/> ${t}</label>`;
+      }).join('');
+      graphTypeList.querySelectorAll('input[data-graph-type]').forEach(cb=>{
+        cb.addEventListener('change', ()=>{
+          const t=cb.getAttribute('data-graph-type');
+          if(viewState.graphTypeFilter===null) viewState.graphTypeFilter=new Set(types);
+          if(cb.checked){ viewState.graphTypeFilter.add(t); } else { viewState.graphTypeFilter.delete(t); }
+          // If all are selected, set to null to mean "all"
+          if(viewState.graphTypeFilter.size===types.length) viewState.graphTypeFilter=null;
+          render();
+        });
+      });
+    }
+    if(graphTypeToggle && graphTypePanel){
+      graphTypeToggle.addEventListener('click', ()=>{
+        const open=graphTypePanel.style.display==='block';
+        graphTypePanel.style.display = open ? 'none' : 'block';
+        graphTypeToggle.setAttribute('aria-expanded', open ? 'false' : 'true');
+        if(!open) syncGraphTypeUI();
+      });
+      document.addEventListener('click',(e)=>{
+        if(!graphTypePanel.contains(e.target) && e.target!==graphTypeToggle){
+          graphTypePanel.style.display='none';
+          graphTypeToggle.setAttribute('aria-expanded','false');
+        }
+      });
+    }
+    if(graphTypeAll){
+      graphTypeAll.addEventListener('click', ()=>{
+        viewState.graphTypeFilter = null; // null = all
+        syncGraphTypeUI();
+        render();
+      });
+    }
+    if(graphTypeNone){
+      graphTypeNone.addEventListener('click', ()=>{
+        viewState.graphTypeFilter = new Set(); // empty = none
+        syncGraphTypeUI();
+        render();
+      });
+    }
     window.addEventListener('resize', ()=>{ if(viewState.mode==='graph' && viewState.cy){ viewState.cy.resize(); viewState.cy.fit(undefined,30); } });
 
     // Burger menu logic
