@@ -44,6 +44,9 @@
     .type{position:absolute;top:12px;right:12px;font-size:12px;color:var(--muted);border:1px solid #273149;background:#0f1521;
       padding:4px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.5px}
     .title{margin:0 0 6px;font-size:18px;letter-spacing:.2px}
+    .card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .card-actions button{background:#121a28;border:1px solid #263149;color:#dbe6f9;border-radius:10px;padding:6px 10px;cursor:pointer;font-size:12px}
+    .card-actions button:hover{border-color:var(--accent);color:#fff}
     /* List view */
     #listWrap{display:none}
     .list{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
@@ -247,6 +250,7 @@
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
   <script src="https://unpkg.com/cytoscape@3.26.0/dist/cytoscape.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <!-- Data -->
   <script src="data/data.js"></script>
@@ -293,6 +297,36 @@
     async function copyJournalPermalink(slug){
       const url=new URL(window.location.href); url.hash=`journal/${slug}`; url.searchParams.set("view","journal");
       await navigator.clipboard.writeText(url.toString());
+    }
+    async function copyCard(slug){
+      const entry=state.data.find(e=>e.slug===slug); if(!entry) return;
+      const tags=(entry.tags||[]).map(t=>`#${t}`).join(' ');
+      const lines=[
+        `# ${entry.title || '(untitled)'}`,
+        `${entry.type || ''}${entry.date ? ' · '+entry.date : ''}`.trim(),
+        entry.summary || '',
+        tags,
+        '',
+        entry.body || ''
+      ].filter(Boolean);
+      const text=lines.join('\n');
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(err){
+        console.error(err);
+      }
+    }
+    async function saveCardPng(slug){
+      const el=document.getElementById(slug); if(!el || !window.html2canvas) return;
+      const clone=el.cloneNode(true);
+      clone.style.position='absolute'; clone.style.top='-9999px'; clone.style.left='-9999px'; clone.style.width=el.offsetWidth+'px';
+      document.body.appendChild(clone);
+      try{
+        const canvas=await html2canvas(clone,{backgroundColor:'#0b0e12',scale:2});
+        const data=canvas.toDataURL('image/png');
+        const a=document.createElement('a'); a.href=data; a.download=`${slug}.png`; a.click();
+      }catch(err){ console.error(err); }
+      finally{ document.body.removeChild(clone); }
     }
 
     // --- Config ---
@@ -444,6 +478,10 @@
             <div class="meta">${date}${e.summary ? (date?' / ':'') + e.summary : ''}</div>
             <div class="tags">${tags}</div>
             <div class="body">${bodyHTML}</div>
+            <div class="card-actions">
+              <button type="button" data-card-copy="${e.slug}">Copy card</button>
+              <button type="button" data-card-png="${e.slug}">Save PNG</button>
+            </div>
           </article>
         `;
       }).join('');
@@ -460,6 +498,12 @@
           if(e.altKey){ const url=new URL(window.location.href); url.hash=slug; url.searchParams.set("slug",slug); window.open(url.toString(),'_blank'); }
           else{ e.preventDefault(); setSlugInURL(slug); focusBySlug(slug,true); }
         });
+      });
+      res.querySelectorAll('[data-card-copy]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{ copyCard(btn.getAttribute('data-card-copy')); });
+      });
+      res.querySelectorAll('[data-card-png]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{ saveCardPng(btn.getAttribute('data-card-png')); });
       });
     }
 
