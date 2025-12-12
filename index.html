@@ -83,6 +83,17 @@
     .dim{opacity:0.25}
     .legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:8px 0 0}
     .legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+    /* References */
+    #refsWrap{display:none}
+    .refs-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin-top:12px}
+    .ref-card{background:linear-gradient(180deg,#111722 0%,#0e141d 100%);border:1px solid #1f2a3b;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
+    .ref-card img{width:100%;border-radius:10px;border:1px solid #1f2a3b;background:#0c111a}
+    .ref-card .meta{color:#a7b0c0;font-size:13px}
+    /* Reference modal */
+    #refModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);z-index:1100}
+    #refModal.show{display:flex}
+    #refModal img{max-width:90vw;max-height:90vh;border-radius:12px;border:1px solid #1f2a3b;background:#0b0f18}
+    #refModal button{position:absolute;top:16px;right:16px;background:#121a28;border:1px solid #263149;color:#dbe6f9;border-radius:10px;padding:8px 10px;cursor:pointer}
 
     /* Journal */
     #journalWrap{display:none}
@@ -111,7 +122,7 @@
     .burger span{ width:18px; height:2px; background:#bcd3ff; display:block; position:relative }
     .burger span::before, .burger span::after{ content:""; position:absolute; left:0; width:18px; height:2px; background:#bcd3ff }
     .burger span::before{ top:-6px } .burger span::after{ top:6px }
-    .menu{ position:fixed; inset:0 0 0 auto; width:260px; background:#0e141f; border-left:1px solid #1e2634; transform:translateX(100%);
+    .menu{ position:fixed; top:0; left:0; bottom:0; right:auto; width:260px; background:#0e141f; border-right:1px solid #1e2634; transform:translateX(-100%);
       transition:transform .2s ease; z-index:1000; padding:16px }
     .menu.open{ transform:none }
     .menu h3{ margin:6px 0 12px; color:#e7edf6 }
@@ -130,7 +141,7 @@
     <button class="burger" id="burger" type="button" title="Menu" aria-label="Open navigation" aria-expanded="false" aria-controls="menu"><span></span></button>
     <h1>Corven Lore Lookup</h1>
     <div class="sub">A living, searchable lore bible for Corven\u2014people, places, events, items, and journal entries.</div>
-    <div class="hint">Browse lore as cards or a compact list, jump to the graph, or switch over to the campaign journal view.</div>
+    <div class="hint">Browse lore as cards or a compact list, jump to the graph, switch over to the campaign journal, or check shared references like maps.</div>
     <div class="toolbar">
       <input id="q" type="search" placeholder="Search by title, tags, content (try: 'Apostate Crow', 'Mojon', 'mentor')" aria-label="Search lore and journal" />
       <div class="row">
@@ -158,6 +169,12 @@
     <div id="listWrap">
       <ul id="listResults" class="list"></ul>
       <div id="listEmpty" class="empty" style="display:none;">No matching entries. Try fewer filters or a different search.</div>
+    </div>
+
+    <!-- References -->
+    <div id="refsWrap">
+      <div class="refs-grid" id="refsGrid"></div>
+      <div id="refsEmpty" class="empty" style="display:none;">No reference items yet.</div>
     </div>
 
     <!-- Graph -->
@@ -194,11 +211,16 @@
   <div class="menu" id="menu" role="navigation" aria-label="View selector">
     <h3>Navigate</h3>
     <button class="menu-item" type="button" data-target="cards">Lore (Cards)</button>
+    <button class="menu-item" type="button" data-target="refs">References</button>
     <button class="menu-item" type="button" data-target="list">Lore (List)</button>
     <button class="menu-item" type="button" data-target="graph">Lore (Graph)</button>
     <button class="menu-item" type="button" data-target="journal">Journal</button>
   </div>
   <div class="backdrop" id="backdrop"></div>
+  <div id="refModal" role="dialog" aria-modal="true" aria-label="Reference image">
+    <img id="refModalImg" alt="">
+    <button type="button" id="refModalClose">Close</button>
+  </div>
 
   <footer>
     Tip: open a lore entry in a new tab with <span class="kbd">Alt</span> + click. Edit lore in <code>/data/data.js</code> and journal in <code>/data/journal.js</code>.
@@ -263,6 +285,16 @@
     const TYPE_COLOR={ Person:"#6bd4ff", Place:"#ffa942", Event:"#a8ff6b", Item:"#b18cff", Faction:"#ff6b9b", Concept:"#8ad6a6", Note:"#b7c0d4" };
 
     // --- State ---
+    const REFERENCES=[
+      {
+        title:"Caves of Chaos",
+        desc:"Shared by the DM for quick reference.",
+        src:"assets/map.jpg",
+        alt:"Caves of Chaos map",
+        note:"Place your map image at assets/map.jpg to display it here."
+      }
+    ];
+
     let state={
       q:"", activeTypes:new Set(), activeTags:new Set(),
       data:(window.CORVEN_DATA||[]),
@@ -460,6 +492,32 @@
       });
     }
 
+    // --- References view ---
+    function renderRefs(){
+      const grid=document.getElementById('refsGrid');
+      const empty=document.getElementById('refsEmpty');
+      if(!REFERENCES.length){ grid.innerHTML=''; empty.style.display='block'; return; }
+      empty.style.display='none';
+      grid.innerHTML = REFERENCES.map(ref=>{
+        const img = ref.src ? `<img src="${ref.src}" alt="${ref.alt||ref.title}" data-ref-src="${ref.src}" data-ref-title="${ref.title}" onerror="this.style.display='none'; const fallback=this.nextElementSibling; if(fallback) fallback.style.display='block';" />` : '';
+        const fallback = ref.note ? `<div class="meta" style="display:none;">${ref.note}</div>` : '';
+        return `
+          <article class="ref-card">
+            <div class="meta">${ref.desc || ''}</div>
+            <h3 class="title">${ref.title}</h3>
+            ${img}${fallback}
+          </article>
+        `;
+      }).join('');
+
+      grid.querySelectorAll('img[data-ref-src]').forEach(img=>{
+        img.style.cursor='pointer';
+        img.addEventListener('click', ()=>{
+          openRefModal(img.getAttribute('data-ref-src'), img.getAttribute('data-ref-title') || img.alt || 'Reference');
+        });
+      });
+    }
+
     // --- Graph view ---
     function buildGraphElements(rows){
       const nodes=new Map(), edges=new Map(), bySlug=new Map(rows.map(r=>[r.slug,r]));
@@ -554,6 +612,21 @@
       }
     }
 
+    function openRefModal(src,title){
+      const modal=document.getElementById('refModal');
+      const img=document.getElementById('refModalImg');
+      img.src=src;
+      img.alt=title || 'Reference image';
+      modal.classList.add('show');
+      document.body.style.overflow='hidden';
+      modal.focus();
+    }
+    function closeRefModal(){
+      const modal=document.getElementById('refModal');
+      modal.classList.remove('show');
+      document.body.style.overflow='';
+    }
+
     // --- Journal view ---
     function renderJournal(rows){
       const surface=document.getElementById('journalSurface');
@@ -626,6 +699,7 @@
             cardsWrap=document.getElementById('cardsWrap'),
             graphWrap=document.getElementById('graphWrap'),
             listWrap=document.getElementById('listWrap'),
+            refsWrap=document.getElementById('refsWrap'),
             journalWrap=document.getElementById('journalWrap'),
             journalPrompt=document.getElementById('journalPrompt'),
             cardsPrompt=document.getElementById('cardsPrompt');
@@ -633,6 +707,7 @@
       // show/hide sections
       cardsWrap.style.display = (mode==='cards') ? 'block' : 'none';
       graphWrap.style.display = (mode==='graph') ? 'block' : 'none';
+      refsWrap.style.display = (mode==='refs') ? 'block' : 'none';
       listWrap.style.display = (mode==='list') ? 'block' : 'none';
       journalWrap.style.display = (mode==='journal') ? 'block' : 'none';
 
@@ -666,6 +741,9 @@
       } else if(viewState.mode==='list'){
         const rows=queryLore();
         renderList(rows);
+      } else if(viewState.mode==='refs'){
+        document.getElementById('counts').textContent=`Reference materials`;
+        renderRefs();
       } else if(viewState.mode==='journal'){
         const rows=queryJournal();
         renderJournal(rows);
@@ -707,6 +785,10 @@
     const graphSearchBtn=document.getElementById('graphSearchBtn');
     if(graphSearchBtn){ graphSearchBtn.addEventListener('click', ()=>{ graphSearch(graphSearchInput.value); }); }
     if(graphSearchInput){ graphSearchInput.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ graphSearch(graphSearchInput.value); } }); }
+    const refModal=document.getElementById('refModal');
+    const refModalClose=document.getElementById('refModalClose');
+    if(refModalClose){ refModalClose.addEventListener('click', closeRefModal); }
+    if(refModal){ refModal.addEventListener('click',(e)=>{ if(e.target===refModal){ closeRefModal(); } }); }
     window.addEventListener('resize', ()=>{ if(viewState.mode==='graph' && viewState.cy){ viewState.cy.resize(); viewState.cy.fit(undefined,30); } });
 
     // Burger menu logic
@@ -735,6 +817,7 @@
     if(want==='journal'){ toggleTo('journal', false); }
     else if(want==='graph'){ toggleTo('graph', false); }
     else if(want==='list'){ toggleTo('list', false); }
+    else if(want==='refs'){ toggleTo('refs', false); }
     else { toggleTo('cards', false); }
     renderFilters();
     render();
@@ -757,6 +840,3 @@
   </script>
 </body>
 </html>
-
-
-

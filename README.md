@@ -1,4 +1,4 @@
-# Corven Lore Lookup
+ï»¿# Corven Lore Lookup
 A searchable, auto-updating lore bible for **Corven Mael (Echo)**, powered by Google Sheets and GitHub Pages.
 
 ---
@@ -27,8 +27,8 @@ A searchable, auto-updating lore bible for **Corven Mael (Echo)**, powered by Go
 4. **Deploy the update**
    - **Runtime mode**: Just refresh the site.
    - **GitHub Action mode**:  
-     - Wait for the scheduled sync (every 12–24 hours), or  
-     - Trigger it manually: _Actions ? "Sync Lore from Google Sheets" ? Run workflow._
+     - Wait for the scheduled sync (every 12-24 hours), or  
+     - Trigger it manually: _Actions -> "Sync Lore from Google Sheets" -> Run workflow._
 
 ---
 
@@ -43,6 +43,11 @@ When rendered, it links directly to that card on the site.
 
 ## Exporting / Printing (planned)
 Future feature: select entries and export them as printable cards or a lore packet PDF.
+
+---
+
+## References (maps, images)
+Place shared reference files in `assets/` (e.g., `assets/map.jpg`). They appear under the **References** section in the slide-out menu.
 
 ---
 
