@@ -90,6 +90,13 @@
     .legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
     .sorter{display:flex;align-items:center;gap:8px;margin-top:6px}
     .sorter select{background:#0f1521;border:1px solid #263149;color:var(--text);border-radius:10px;padding:8px 10px}
+    /* Quips */
+    .quip-box{margin-top:12px;padding:12px 14px;border:1px dashed #2a3347;border-radius:12px;background:#0f141d;color:var(--muted);display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .quip-output{flex:1 1 280px;color:#e7edf6;font-weight:600}
+    .quip-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .quip-controls select{background:#0f1521;border:1px solid #263149;color:#e7edf6;border-radius:10px;padding:8px 10px}
+    .quip-btn{background:#121a28;border:1px solid #263149;color:#dbe6f9;border-radius:10px;padding:8px 12px;cursor:pointer}
+    .quip-btn:hover{border-color:var(--accent);color:#fff}
     .graph-filter{position:relative}
     .graph-filter button{min-width:90px}
     .graph-filter .panel{position:absolute;top:110%;left:0;z-index:900;background:#0e141f;border:1px solid #1f2a3b;border-radius:12px;padding:10px;width:240px;box-shadow:0 12px 30px rgba(0,0,0,0.35)}
@@ -171,6 +178,19 @@
         <option value="title_asc">Title (A–Z)</option>
         <option value="title_desc">Title (Z–A)</option>
       </select>
+    </div>
+    <div class="quip-box">
+      <div class="quip-controls">
+        <label for="quipType" class="meta">Corven's one-liners</label>
+        <select id="quipType" aria-label="Select one-liner type">
+          <option value="healing">Healing Word</option>
+          <option value="mockery">Vicious Mockery</option>
+          <option value="inspiration">Bardic Inspiration</option>
+        </select>
+        <button type="button" class="quip-btn" id="quipGenerate">Generate</button>
+        <button type="button" class="quip-btn" id="quipCopy">Copy</button>
+      </div>
+      <div class="quip-output" id="quipOutput">Give me a prompt and I'll sing something useful.</div>
     </div>
     <div class="row meta" id="viewPrompts">
       <button id="journalPrompt" class="chip action" type="button" title="Jump to the journal view">Open Journal</button>
@@ -311,6 +331,16 @@
       const url=new URL(window.location.href); url.hash=`journal/${slug}`; url.searchParams.set("view","journal");
       await navigator.clipboard.writeText(url.toString());
     }
+    function pickQuip(kind){
+      const pool=QUIPS[kind] || [];
+      if(!pool.length) return "";
+      const idx=Math.floor(Math.random()*pool.length);
+      return pool[idx];
+    }
+    async function copyQuip(text){
+      if(!text) return;
+      try{ await navigator.clipboard.writeText(text); }catch(err){ console.error(err); }
+    }
     async function copyCard(slug){
       const entry=state.data.find(e=>e.slug===slug); if(!entry) return;
       const tags=(entry.tags||[]).map(t=>`#${t}`).join(' ');
@@ -358,6 +388,73 @@
         note:"Place your map image at assets/map.jpg to display it here."
       }
     ];
+    const QUIPS={
+      mockery:[
+        "Your name belongs in my ledger under losses.",
+        "I processed corpses with more discipline than you.",
+        "You look like a rounding error begging to be corrected.",
+        "I've heard better screams—yours, actually.",
+        "Don't worry. I'll repeat your last words perfectly.",
+        "Listen—the world is already forgetting you.",
+        "Even your lies are poorly sourced.",
+        "Your fear has a rhythm. Want to hear it?",
+        "The chord beneath creation says you're already dead.",
+        "Echoes last longer than you will.",
+        "Hold still—your incompetence keeps smudging my ink.",
+        "Even worms would spit you back out.",
+        "If you're the best the Mojon can send, perhaps they want to die.",
+        "You sound just like the men who begged at Westcliff.",
+        "I’ve erased smudges with more resistance than you.",
+        "The world hums your failure like a funeral song.",
+        "Even the stone refuses to remember you.",
+        "Your heartbeat is off-tempo. Let me fix it.",
+        "The melody of your life flatlined minutes ago.",
+        "Run. I’ll still remember you.",
+        "Your voice is mine now."
+      ],
+      healing:[
+        "I remember your story. It isn't done.",
+        "Stay with me—I need your voice beside mine.",
+        "Breathe. I've written you into the next page.",
+        "You're still here. That's enough.",
+        "Not yet. I still have questions for you.",
+        "The chord rises. Rise with it.",
+        "Your rhythm falters. Let mine steady it.",
+        "On your feet. That's an order.",
+        "You're not permitted to die today.",
+        "Rise. I'm not done with you.",
+        "I remember your story. It keeps you here.",
+        "The world hums your name—answer it.",
+        "Listen—there you are. Come back to the melody.",
+        "The earth remembers you. Return to it.",
+        "Stand. The ledger isn’t balanced yet.",
+        "Pain is temporary. Purpose is not.",
+        "Your heartbeat—I hear it. Follow it home.",
+        "You fall, I fall. Get up.",
+        "Stay with me. We are not finished."
+      ],
+      inspiration:[
+        "I've seen how you stand. Stand like that now.",
+        "You're better than the page you're on. Turn it.",
+        "I wrote your name beside survivor. Prove me right.",
+        "Your story matters here—make it loud.",
+        "I'll remember this strike. Make it worth the ink.",
+        "The chord rises beneath you—follow it.",
+        "Your heartbeat matches the world's rhythm. Strike on the beat.",
+        "Perform. That's an order.",
+        "I expect excellence.",
+        "Make them remember.",
+        "You carry more truth than they can bear. Use it.",
+        "They’ll quote you after this. Give them something sharp.",
+        "Speak with your blade; I’ll handle the words.",
+        "Truth is on your side. Hit with it.",
+        "I hear your strength—let it echo.",
+        "The stone hums in your favor.",
+        "Go—go—go.",
+        "You. Can. Do. This.",
+        "Be the story."
+      ]
+    };
 
     let state={
       q:"", activeTypes:new Set(), activeTags:new Set(),
@@ -906,6 +1003,10 @@
     const graphTypeList=document.getElementById('graphTypeList');
     const graphTypeAll=document.getElementById('graphTypeAll');
     const graphTypeNone=document.getElementById('graphTypeNone');
+    const quipType=document.getElementById('quipType');
+    const quipGenerate=document.getElementById('quipGenerate');
+    const quipCopy=document.getElementById('quipCopy');
+    const quipOutput=document.getElementById('quipOutput');
     function syncGraphTypeUI(){
       if(!graphTypeList) return;
       const types=graphTypes();
@@ -951,6 +1052,15 @@
         syncGraphTypeUI();
         render();
       });
+    }
+    if(quipGenerate && quipType && quipOutput){
+      quipGenerate.addEventListener('click', ()=>{
+        const line=pickQuip(quipType.value);
+        quipOutput.textContent=line || "I'm out of lines. Add more quips!";
+      });
+    }
+    if(quipCopy && quipOutput){
+      quipCopy.addEventListener('click', ()=>{ copyQuip(quipOutput.textContent || ""); });
     }
     window.addEventListener('resize', ()=>{ if(viewState.mode==='graph' && viewState.cy){ viewState.cy.resize(); viewState.cy.fit(undefined,30); } });
 
