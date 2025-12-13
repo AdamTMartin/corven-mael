@@ -30,6 +30,8 @@
     .filters{display:flex;gap:8px;flex-wrap:wrap}
     .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:var(--chip);
       border:1px solid var(--chip-border);color:var(--muted);cursor:pointer;user-select:none}
+    .chip.tag-chip{background:#162035;border-color:#2b3c56;color:#cfe5ff}
+    .chip.tag-chip[data-active=true]{border-color:var(--accent);color:var(--text)}
     .chip[data-active=true]{color:var(--text);border-color:var(--accent)}
     .chip.action{border-style:dashed;opacity:.9}
     /* Accent button for Graph View */
@@ -86,6 +88,8 @@
     .dim{opacity:0.25}
     .legend{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:8px 0 0}
     .legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+    .sorter{display:flex;align-items:center;gap:8px;margin-top:6px}
+    .sorter select{background:#0f1521;border:1px solid #263149;color:var(--text);border-radius:10px;padding:8px 10px}
     .graph-filter{position:relative}
     .graph-filter button{min-width:90px}
     .graph-filter .panel{position:absolute;top:110%;left:0;z-index:900;background:#0e141f;border:1px solid #1f2a3b;border-radius:12px;padding:10px;width:240px;box-shadow:0 12px 30px rgba(0,0,0,0.35)}
@@ -156,14 +160,23 @@
       <div class="row">
         <div class="filters" id="typeFilters"></div>
         <div class="filters" id="tagFilters"></div>
-        <button id="toggleView" class="chip" type="button" title="Switch between Cards and Graph" aria-label="Switch between cards and graph" aria-pressed="false">Graph View</button>
-        <button id="listView" class="chip" type="button" title="Switch between Cards and List" aria-label="Switch between cards and list" aria-pressed="false">List View</button>
       </div>
     </div>
     <div class="counts" id="counts"></div>
+    <div class="sorter">
+      <label for="sortMode" class="meta">Sort</label>
+      <select id="sortMode" aria-label="Sort entries">
+        <option value="date_desc" selected>Date (newest)</option>
+        <option value="date_asc">Date (oldest)</option>
+        <option value="title_asc">Title (A–Z)</option>
+        <option value="title_desc">Title (Z–A)</option>
+      </select>
+    </div>
     <div class="row meta" id="viewPrompts">
       <button id="journalPrompt" class="chip action" type="button" title="Jump to the journal view">Open Journal</button>
       <button id="cardsPrompt" class="chip action" type="button" title="Back to lore cards" style="display:none;">Cards View</button>
+      <button id="toggleView" class="chip" type="button" title="Switch between Cards and Graph" aria-label="Switch between cards and graph" aria-pressed="false">Graph View</button>
+      <button id="listView" class="chip" type="button" title="Switch between Cards and List" aria-label="Switch between cards and list" aria-pressed="false">List View</button>
     </div>
   </header>
 
@@ -330,7 +343,7 @@
     }
 
     // --- Config ---
-    const TYPES=["Person","Place","Event","Item","Faction","Concept","Note"];
+    const TYPES=["Person","Player","Place","Event","Item","Faction","Concept","Note"];
     const TAG_LIMIT=8;
 
     const TYPE_COLOR={ Person:"#6bd4ff", Place:"#ffa942", Event:"#a8ff6b", Item:"#b18cff", Faction:"#ff6b9b", Concept:"#8ad6a6", Note:"#b7c0d4" };
@@ -351,7 +364,8 @@
       data:(window.CORVEN_DATA||[]),
       journal:(window.JOURNAL_DATA||[]),
       fuse:null, jfuse:null,
-      showAllTags:false, showAllJournalTags:false
+      showAllTags:false, showAllJournalTags:false,
+      sortMode:'date_desc'
     };
     let viewState={ mode:'cards', cy:null, layout:'cose', highlightNeighbors:false, graphTypeFilter:null };
 
@@ -383,7 +397,7 @@
         const all=allJournalTags();
         const visible = state.showAllJournalTags ? all : all.slice(0, TAG_LIMIT);
         visible.forEach(({tag})=>{
-          const chip=document.createElement('button'); chip.className='chip'; chip.type='button'; chip.textContent=`#${tag}`;
+          const chip=document.createElement('button'); chip.className='chip tag-chip'; chip.type='button'; chip.textContent=`#${tag}`;
           chip.setAttribute('data-active', state.activeTags.has(tag)?'true':'false');
           chip.setAttribute('aria-pressed', state.activeTags.has(tag)?'true':'false');
           chip.setAttribute('aria-label', `Filter journal by tag ${tag}`);
@@ -409,7 +423,7 @@
         const all=allLoreTags();
         const visible = state.showAllTags ? all : all.slice(0, TAG_LIMIT);
         visible.forEach(({tag})=>{
-          const chip=document.createElement('button'); chip.className='chip'; chip.type='button'; chip.textContent=`#${tag}`;
+          const chip=document.createElement('button'); chip.className='chip tag-chip'; chip.type='button'; chip.textContent=`#${tag}`;
           chip.setAttribute('data-active', state.activeTags.has(tag)?'true':'false');
           chip.setAttribute('aria-pressed', state.activeTags.has(tag)?'true':'false');
           chip.setAttribute('aria-label', `Filter lore by tag ${tag}`);
@@ -426,13 +440,25 @@
     }
 
     // Query lore
+    function sortLore(rows){
+      const mode=(state.sortMode||'date_desc');
+      return rows.sort((a,b)=>{
+        const da=a.date?Date.parse(a.date):0, db=b.date?Date.parse(b.date):0;
+        if(mode==='date_desc') return db-da;
+        if(mode==='date_asc') return da-db;
+        const ta=(a.title||"").toLowerCase(), tb=(b.title||"").toLowerCase();
+        if(mode==='title_asc') return ta.localeCompare(tb);
+        if(mode==='title_desc') return tb.localeCompare(ta);
+        return db-da;
+      });
+    }
+
     function queryLore(){
       let rows=state.data.slice();
       if(state.q && state.q.trim().length>0){ rows=state.fuse.search(state.q.trim()).map(r=>r.item); }
       if(state.activeTypes.size>0){ rows=rows.filter(r=>state.activeTypes.has(r.type)); }
       if(state.activeTags.size>0){ rows=rows.filter(r=>(r.tags||[]).some(t=>state.activeTags.has(t))); }
-      rows.sort((a,b)=>{ const da=a.date?Date.parse(a.date):0; const db=b.date?Date.parse(b.date):0; if(db!==da) return db-da; return a.title.localeCompare(b.title); });
-      return rows;
+      return sortLore(rows);
     }
 
     // Query journal
@@ -440,7 +466,16 @@
       let rows=state.journal.slice();
       if(state.q && state.q.trim().length>0){ rows=state.jfuse.search(state.q.trim()).map(r=>r.item); }
       if(state.activeTags.size>0){ rows=rows.filter(r=>(r.tags||[]).some(t=>state.activeTags.has(t))); }
-      rows.sort((a,b)=>{ const da=a.date?Date.parse(a.date):0; const db=b.date?Date.parse(b.date):0; if(db!==da) return db-da; return (a.title||"").localeCompare(b.title||""); });
+      const mode=(state.sortMode||'date_desc');
+      rows.sort((a,b)=>{
+        const da=a.date?Date.parse(a.date):0; const db=b.date?Date.parse(b.date):0;
+        if(mode==='date_desc') return db-da;
+        if(mode==='date_asc') return da-db;
+        const ta=(a.title||"").toLowerCase(), tb=(b.title||"").toLowerCase();
+        if(mode==='title_asc') return ta.localeCompare(tb);
+        if(mode==='title_desc') return tb.localeCompare(ta);
+        return db-da;
+      });
       return rows;
     }
 
@@ -831,6 +866,8 @@
     document.getElementById('q').addEventListener('input', e=>{ state.q=e.target.value; render(); });
     document.getElementById('toggleView').addEventListener('click', ()=>{ toggleTo(viewState.mode==='graph'?'cards':'graph'); render(); });
     document.getElementById('listView').addEventListener('click', ()=>{ toggleTo(viewState.mode==='list'?'cards':'list'); render(); });
+    const sortSelect=document.getElementById('sortMode');
+    if(sortSelect){ sortSelect.addEventListener('change',(e)=>{ state.sortMode=e.target.value; render(); }); }
     const journalPromptBtn=document.getElementById('journalPrompt');
     const cardsPromptBtn=document.getElementById('cardsPrompt');
     if(journalPromptBtn){ journalPromptBtn.addEventListener('click', ()=>{ toggleTo('journal'); render(); }); }
