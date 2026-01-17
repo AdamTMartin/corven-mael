@@ -13,7 +13,7 @@ window.CORVEN_DATA = [
       "motive",
       "oath"
     ],
-    "body": "\n**Species/Class**: Kenku Bard (and eventually Rogue?)\n\n**Concept**: Damned wanderer seeking to cut out the rot and the rot in himself.  \n\n**Hometown**: [[hometown]]\n\n**Destiny**: [[epic-destiny]]\n\n---\n\n**Core vows**\n- *Never let Mojon chains close on anyone else again.*\n- *Debts are paid in full—coin, blood, or time.*\n\n**Threads**\n- The **Mojon Mining Consortium** used prisoners as blood-keys in timework. Corven escaped. [[mojon-mining-consortium]], [[docks-cavern-ambush]]\n- Keeps a black token from the **Apostate Crow** as a reminder. [[apostate-crow]]\n- Wears [[the-mask]] on his chest, like a breastplate (but distinctly not for armor)\n\n**Known Associates** (AKA Player Characters)\n- [[brand]]\n- [[chant]]\n- [[willa-mae]]\n- [[little-odd-aspenleaf]]\n    "
+    "body": "\n**Species/Class**: Kenku Bard (and eventually Rogue?)\n\n**Concept**: Damned wanderer seeking to cut out the rot and the rot in himself.  \n\n**Hometown**: [[hometown]]\n\n**Destiny**: [[epic-destiny]]\n\n---\n\n**Core vows**\n- *Never let Mojon chains close on anyone else again.*\n- *Debts are paid in full—coin, blood, or time.*\n\n**Threads**\n- The **Mojon Mining Consortium** used prisoners as blood-keys in timework. Corven escaped. [[mojon-mining-consortium]], [[docks-cavern-ambush]]\n- Keeps a black token from the **Apostate Crow** as a reminder. [[apostate-crow]]\n- Wears [[the-mask]] on his chest, like a breastplate (but distinctly not for armor)\n\n**Known Associates** (AKA Player Characters)\n- [[brand]]\n- [[chant]]\n- [[willa-mae]]\n- [[little-odd-aspenleaf]]\n\n**Common Phrases**\n- [[corven-healing-words]]"
   },
   {
     "slug": "docks-cavern-ambush",
@@ -38,7 +38,7 @@ window.CORVEN_DATA = [
       "player",
       "protagonist"
     ],
-    "body": "Listen, I don't remember exactly what kind of species Brand is. But I'll say this - he's amazing, and is MUCH taller than [[corven-profile]].\n\nPlayed by O.\n\nStolen at a very young age and branded by an offshoot of the Guild. Worked as a miner for Kithalist."
+    "body": "Listen, I don't remember exactly what kind of species Brand is. But I'll say this - he's amazing, and is MUCH taller than [[corven-profile]]. Branded by the [[order-of-the-talon]].\n\nPlayed by O.\n\nStolen at a very young age and branded by an offshoot of the Guild. Worked as a miner for Kithalist."
   },
   {
     "slug": "brud-mojon",
@@ -52,6 +52,16 @@ window.CORVEN_DATA = [
     "body": "He was a chief of field operations in Hollín until he was killed in 503 s.d."
   },
   {
+    "slug": "carrion-crawler",
+    "type": "Antagonist",
+    "title": "Carrion Crawler",
+    "summary": "To Eat Corpses",
+    "tags": [
+      "lore"
+    ],
+    "body": "Feast on the dead with no qualms\nOccassionally Guild uses them to clean up battlefields and other carrion\nSurprisingly Fast\nParalyzing Tentacles\n"
+  },
+  {
     "slug": "chant",
     "type": "Player",
     "title": "Chant",
@@ -61,6 +71,17 @@ window.CORVEN_DATA = [
       "protagonist"
     ],
     "body": "What's Dwight cooking up!? Sorcerer Supreme, and everybody owes him favors. Linked intrinsically to the caravan leader, just like [[corven-profile]].\n\nPlayed by Dwight.\n\nSpreading the \"word\" of the \"church\""
+  },
+  {
+    "slug": "corven-healing-words",
+    "type": "Note",
+    "title": "Corven's Healing Words",
+    "summary": "What are some things Corven says Healing Words?",
+    "tags": [
+      "story",
+      "note"
+    ],
+    "body": "“I remember your story. It isn’t done.”\n\n“Stay with me — I need your voice beside mine.”\n\n“Breathe. I’ve written you into the next page.”\n\n“You’re still here. That’s enough.”\n\n“Not yet. I still have questions for you.”\n\n“The chord rises. Rise with it.”\n\n“The world hums your name — answer it.”\n\n“Your rhythm falters. Let mine steady it.”\n\n“Listen… there you are. Come back to the melody.”\n\n“The earth remembers you. Return to it.”\n\n“On your feet. That’s an order.”\n\n“You’re not permitted to die today.”\n\n“Stand. The ledger isn’t balanced yet.”\n\n“Pain is temporary. Purpose is not.”\n\n“Rise. I’m not done with you.”\n\n“Come back… back… back…”\n\n“Hear me—hear us—you’re not alone.”\n\n“Your heartbeat… I hear it… follow it home.”\n\n“You fall, I fall. Get up.”\n\n“Stay—stay—stay with me.”\n\n“Rise.”\n\n“Not yet.”\n\n“Echo.”\n\n“Stand.”\n\n“Live.”\n\n⭐ Personal Favorites\n\n“I remember your story. It isn’t done.”\n\n“The chord rises. Rise with it.”\n\n“You’re not permitted to die today.”\n\n“Your rhythm falters. Let mine steady it.”\n\n“Not yet.” (Echo voice)"
   },
   {
     "slug": "the-mask",
@@ -187,6 +208,28 @@ window.CORVEN_DATA = [
     "body": "\n**Modus**: Capture bloodlines tied to old pacts; harvest vitae for \"retroactive favors.\"  \n**Notes**: Ties into The Guild and the Apostate Crow; off-books convoys run through sympathetic ports.  \n\n**Known Contacts and Subservient Factions**\n- Quartermaster **[[sib-orveck]]** (coward with immaculate boots).\n- **[[the-mojon-family]]**\n- **[[acquisitors]]**\n- **[[hollow-men]]**\n- **[[regulators]]**\n- **[[hollowed]]**\n- **[[edwin-tolstoff]]**\n- **[[sons-of-kyuss]]**"
   },
   {
+    "slug": "bell-notes",
+    "type": "Thing",
+    "title": "Notes On The Bell",
+    "summary": "Scatian Notes on the Bell",
+    "tags": [
+      "lore",
+      "thing"
+    ],
+    "body": "Book on the bell"
+  },
+  {
+    "slug": "order-of-the-talon",
+    "type": "Faction",
+    "title": "Order of the Talon",
+    "summary": "Placeholder",
+    "tags": [
+      "faction",
+      "story"
+    ],
+    "body": "Placeholder"
+  },
+  {
     "slug": "pallus-mojon",
     "type": "Person",
     "title": "Pallus Mojon",
@@ -230,6 +273,18 @@ window.CORVEN_DATA = [
       "ideas"
     ],
     "body": "\n- NPC idea: **Guilder Archivist** who buys confessions like futures.  \n- Location seed: **Wharf of Tides-That-Return**, clocks run wrong.  \n- Theme line: *\"If you carry the past, let it cut who needs cutting.\"*\n    "
+  },
+  {
+    "slug": "shale-lathwin",
+    "type": "Person",
+    "title": "Shale Lathwin",
+    "summary": "Someone entombed in the Caves of Chaos",
+    "tags": [
+      "story",
+      "note",
+      "lore"
+    ],
+    "body": "\"Here lies Shale Lathwin, doomed by ambition.\"\n\nAlso\n\n\"Fuck That Bell\"\n\nUndercurrent of rot from the cave, shuffling sound from the cave\nWizard, 15 years older than Chant, someone who worked for the Enclave in Bagin\nEnclave works with The Guild, more like a \"think tank\" of wizards\n\nRecall invoices for work being farmed out to Leader of The Inquisitors, Entinin Velosh\nNoted as items were passing over my desk\nVelosh used this young woman to do some arcane and occult research\nVelosh was respected, and capable, did work for the Inquisitors and the Mojon, \"wunderkin\" as far Occult research went. 5 years back or so."
   },
   {
     "slug": "sib-orveck",
