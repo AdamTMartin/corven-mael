@@ -73,6 +73,17 @@ window.CORVEN_DATA = [
     "body": "What's Dwight cooking up!? Sorcerer Supreme, and everybody owes him favors. Linked intrinsically to the caravan leader, just like [[corven-profile]].\n\nPlayed by Dwight.\n\nSpreading the \"word\" of the \"church\""
   },
   {
+    "slug": "rojas",
+    "type": "Person",
+    "title": "Commander Rojas",
+    "summary": "Eikithkin Commander of the Keep",
+    "tags": [
+      "person",
+      "story"
+    ],
+    "body": "TBD"
+  },
+  {
     "slug": "corven-healing-words",
     "type": "Note",
     "title": "Corven's Healing Words",
@@ -107,6 +118,17 @@ window.CORVEN_DATA = [
     "body": "Little is known of Devid, who has never left the town of Mojon. He is the voice of his Father, and most of the children take their orders from him (save Kalista, who is Daddy’s Little Princess.). He handles much of the logistical management of the family operations. "
   },
   {
+    "slug": "durn",
+    "type": "Person",
+    "title": "Durn",
+    "summary": "Dwarven Scribe of the Keep",
+    "tags": [
+      "person",
+      "story"
+    ],
+    "body": "TBD"
+  },
+  {
     "slug": "edwin-tolstoff",
     "type": "Person",
     "title": "Edwin Tolstoff",
@@ -117,6 +139,17 @@ window.CORVEN_DATA = [
       "lore"
     ],
     "body": "Master necromancer from the Age of Empires, Wormcaller and the Hand of [[apostate-crow]]. He seems to stand higher than Father Mojon (see [[pallus-mojon]]) in the esteem of the Apostate Crow, and his voice is considered to be synonymous with that of the Crow. He is served Directly by [[sons-of-kyuss]], who follow his will as their own. "
+  },
+  {
+    "slug": "elandra",
+    "type": "Person",
+    "title": "Elandra",
+    "summary": "Drow Half-Elf Mage Hand of the Keep",
+    "tags": [
+      "person",
+      "story"
+    ],
+    "body": "TBD"
   },
   {
     "slug": "bard-plan",
@@ -149,6 +182,18 @@ window.CORVEN_DATA = [
       "backstory"
     ],
     "body": "Hovlin, book making, major trade route near Cymbri"
+  },
+  {
+    "slug": "ivlis",
+    "type": "Person",
+    "title": "Ivlis",
+    "summary": "Priest of the Keep",
+    "tags": [
+      "lore",
+      "person",
+      "story"
+    ],
+    "body": "Ivlis was a priest of the Dawnflower that was obsessed with the bloodlines of Rathu, especially the Spellfire. Obsessed with [[elandra]]'s books.\n\nShe tried to perform a ritual to awaken the Spellfire bloodline within her, and it burned her from the inside out. Only thing untouched was the amulet of the Dawnflower.\n\nHer remains were buried in the graveyard of the Keep."
   },
   {
     "slug": "kalista-mojon",
@@ -196,6 +241,17 @@ window.CORVEN_DATA = [
     "body": "Tried to steal [[corven-profile]]'s personal ledger. Don't do that again. I've got my beady crow eyes on you.\n\nPlayed by Cherith."
   },
   {
+    "slug": "mee-maw",
+    "type": "Person",
+    "title": "Mee-Maw \"The Iron Rose\" Beedleberry",
+    "summary": "Willa-Mae's Mee-Maw",
+    "tags": [
+      "person",
+      "lore"
+    ],
+    "body": "[[willa-mae-rose]]'s Grandmother, the Iron Rose of the Watchful Order, took an oath to eradicate evin wherever she found it."
+  },
+  {
     "slug": "mojon-mining-consortium",
     "type": "Faction",
     "title": "Mojon Mining Consortium",
@@ -210,13 +266,13 @@ window.CORVEN_DATA = [
   {
     "slug": "bell-notes",
     "type": "Thing",
-    "title": "Notes On The Bell",
+    "title": "Notes On \"The Culling Bell\"",
     "summary": "Scatian Notes on the Bell",
     "tags": [
       "lore",
       "thing"
     ],
-    "body": "Book on the bell"
+    "body": "Book on the bell\n\n\"The Culling Bell\""
   },
   {
     "slug": "order-of-the-talon",
@@ -303,6 +359,17 @@ window.CORVEN_DATA = [
     "body": "\"**Status:** Deceased (see [[docks-cavern-ambush]])  \n**Affiliation:** [[mojon-mining-consortium]]  \n**Role:** Quartermaster and Handler of Irregular Assets  \n\nSib Orveck was the Mojon Mining Consortium’s preferred mouthpiece for dirty logistics—too well-spoken for a torturer, too calm for a commander. His boots were always polished, his quill always sharp, and his contracts always fatal. He managed the \\\"released\\\" prisoners the Mojon used for off-books relic retrieval and experimental timework, ensuring every debt paid itself in blood.  \n\nTo the condemned, Orveck was the voice of mercy: polite, deliberate, even sympathetic. He made you *believe* the noose was your own idea. Corven Mael ( [[corven-profile]] ) was one of those he handled—a Kenku assigned to the Westcliff reclamation site under false promises of clemency. In truth, Orveck had marked him for sacrifice, the living key meant to keep the Kithalist chamber sealed.  \n\nWhen the chamber sang itself apart in the [[docks-cavern-ambush]], Orveck’s body was destroyed into a pile of worms, but his **voice** endured. Corven heard it woven into the world’s hidden chord, a remnant of authority stripped of its master. He took that voice as his own, reshaping it into a weapon.  \n\nNow, when **Echo** speaks, it is Orveck’s cadence the Mojon hear—a calm, familiar rhythm turned against them. Some whisper that Orveck’s ghost travels within that tone, forced to witness every truth and execution it now delivers. Corven keeps it not as tribute, but as reclamation: proof that even a Mojon voice can be rewritten.\""
   },
   {
+    "slug": "spellfire",
+    "type": "Thing",
+    "title": "Spellfire Bloodline",
+    "summary": "Bloodline found in Elandra's Books",
+    "tags": [
+      "lore",
+      "story"
+    ],
+    "body": "There is a specific bloodline that catches your eye, with the book having been opened to that particular page enough that the binding is cracked and biased to it. It is in Skashan, but I know you have the means to read things of all sorts, so the bloodline is referred to as the Spellfire line. A small scrap of paper lies forgotten in the gutter, bearing the following: \"last known Spellfire line traced to Bagin in 488. Still alive?\"\n\nThese spellcasters can pull from the inherent magic of the land, and the ley lines. Akin to Wild Magic, but more controlled. [[ivlis]] firmly believed that she was from this bloodline."
+  },
+  {
     "slug": "acquisitors",
     "type": "Faction",
     "title": "The Acquisitors",
@@ -382,6 +449,18 @@ window.CORVEN_DATA = [
       "antagonist"
     ],
     "body": "Takes faces\nIf he takes a face, he can wear it"
+  },
+  {
+    "slug": "pheasant-eye",
+    "type": "Antagonist",
+    "title": "The Pheasant Eye",
+    "summary": "Willa-Mae Antagonist?",
+    "tags": [
+      "lore",
+      "thing",
+      "story"
+    ],
+    "body": "The Watchful Order, and Mee-Maw, have had issues with the Pheasant Eye. Willa-Mae might be joining the Watchful Order to work against this antagonist?"
   },
   {
     "slug": "the-red-hand",
